@@ -1,0 +1,11 @@
+# Environment & sensitive credentials
+.env
+
+# Operating System & IDE artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local logs
+*.log

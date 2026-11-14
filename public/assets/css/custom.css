@@ -1,0 +1,34 @@
+/**
+ * RTIH TaskFlow – Custom Overrides & Enhancements
+ */
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #c1c8c6;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #717977;
+}
+
+/* Line clamp fallback */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

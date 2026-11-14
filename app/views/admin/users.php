@@ -1,0 +1,271 @@
+<?php
+/**
+ * Administrator – User Management Console View
+ * 1:1 match to Google Stitch screen bb2c187ad5e645ad994858747ca28e23
+ * RTIH TaskFlow
+ */
+$pageTitle = 'TaskFlow – Administrator User Management';
+require_once __DIR__ . '/../layouts/header.php';
+require_once __DIR__ . '/../layouts/toast.php';
+require_once __DIR__ . '/../layouts/sidebar.php';
+
+$currentUser = auth_user();
+?>
+<div class="ml-64 min-h-screen flex flex-col justify-between bg-background">
+    <div class="flex-1">
+        
+        <!-- Header -->
+        <header class="h-16 border-b border-outline-variant/30 bg-surface/80 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between px-8">
+            <div class="flex items-center gap-2 text-xs font-medium text-on-surface-variant">
+                <span class="material-symbols-outlined text-[18px]">home</span>
+                <span>/</span>
+                <span class="text-primary font-semibold">Administrator</span>
+                <span>/</span>
+                <span class="text-on-surface">User Management</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider">
+                    Total Users: <?= count($users) ?>
+                </span>
+            </div>
+        </header>
+
+        <!-- Main Body -->
+        <main class="p-8 max-w-7xl mx-auto space-y-6">
+
+            <!-- Title & Subtitle -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="font-heading text-2xl sm:text-3xl font-bold text-on-surface tracking-tight">
+                        User Directory & Access Control
+                    </h1>
+                    <p class="text-xs sm:text-sm text-on-surface-variant mt-1">
+                        View registered users, monitor task activity, and configure administrative role permissions.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Search & Role Filter Toolbar -->
+            <div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+                <form action="<?= BASE_URL ?>/public/index.php" method="GET" class="w-full flex-1 flex flex-col sm:flex-row items-center gap-3">
+                    <input type="hidden" name="page" value="admin-users">
+
+                    <div class="relative flex-1 w-full">
+                        <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px]">search</span>
+                        <input type="text" name="search" value="<?= e($search) ?>"
+                               class="w-full h-10 pl-9 pr-4 bg-surface-container-low text-on-surface text-xs rounded-lg border border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-all placeholder:text-outline"
+                               placeholder="Search users by name or email address...">
+                    </div>
+
+                    <div class="relative w-full sm:w-48">
+                        <select name="role" onchange="this.form.submit()"
+                                class="w-full h-10 pl-3 pr-8 bg-surface-container-low text-on-surface text-xs rounded-lg border border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none appearance-none cursor-pointer transition-all">
+                            <option value="">All Roles</option>
+                            <option value="admin" <?= $role === 'admin' ? 'selected' : '' ?>>Administrator</option>
+                            <option value="user" <?= $role === 'user' ? 'selected' : '' ?>>Standard User</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-2.5 top-2.5 pointer-events-none text-on-surface-variant text-[18px]">expand_more</span>
+                    </div>
+
+                    <button type="submit" class="px-4 h-10 bg-primary text-on-primary text-xs font-semibold rounded-lg hover:bg-primary/90 transition-colors shrink-0">
+                        Filter
+                    </button>
+
+                    <?php if (!empty($search) || !empty($role)): ?>
+                    <a href="<?= BASE_URL ?>/public/index.php?page=admin-users" 
+                       class="px-3 h-10 flex items-center justify-center text-xs text-error hover:bg-error-container/30 rounded-lg transition-colors shrink-0" title="Reset filter">
+                        <span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+                    </a>
+                    <?php endif; ?>
+                </form>
+            </div>
+
+            <!-- Users Table -->
+            <div class="rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-surface-container/60 border-b border-outline-variant/30 text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">
+                                <th class="py-3 px-6">User Identity</th>
+                                <th class="py-3 px-4">Role</th>
+                                <th class="py-3 px-4">Active Workload</th>
+                                <th class="py-3 px-4">Joined Date</th>
+                                <th class="py-3 px-6 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/20 text-xs text-on-surface">
+                            <?php foreach ($users as $u): ?>
+                            <tr class="hover:bg-surface-container-low/50 transition-colors">
+                                <!-- Identity -->
+                                <td class="py-4 px-6 whitespace-nowrap">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-surface-container text-primary font-bold text-sm flex items-center justify-center shrink-0">
+                                            <?= strtoupper(substr($u['name'], 0, 1)) ?>
+                                        </div>
+                                        <div>
+                                            <span class="font-semibold text-on-surface text-sm block leading-tight">
+                                                <?= e($u['name']) ?>
+                                                <?php if ((int)$u['id'] === (int)$currentUser['id']): ?>
+                                                <span class="ml-1 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-normal">(You)</span>
+                                                <?php endif; ?>
+                                            </span>
+                                            <span class="text-xs text-on-surface-variant block mt-0.5"><?= e($u['email']) ?></span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Role Badge -->
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <?php if ($u['role'] === 'admin'): ?>
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary text-on-primary">
+                                        <span class="material-symbols-outlined text-[14px]">shield_person</span>
+                                        Administrator
+                                    </span>
+                                    <?php else: ?>
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-surface-container text-on-surface-variant border border-outline-variant/40">
+                                        <span class="material-symbols-outlined text-[14px]">person</span>
+                                        Standard User
+                                    </span>
+                                    <?php endif; ?>
+                                </td>
+
+                                <!-- Workload Metrics -->
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-3">
+                                        <span class="font-semibold text-on-surface"><?= $u['total_tasks'] ?> total</span>
+                                        <span class="text-[11px] text-sky-800 bg-sky-50 px-2 py-0.5 rounded">
+                                            <?= $u['in_progress_tasks'] ?? 0 ?> in progress
+                                        </span>
+                                        <span class="text-[11px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
+                                            <?= $u['completed_tasks'] ?? 0 ?> done
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <!-- Joined Date -->
+                                <td class="py-4 px-4 whitespace-nowrap text-on-surface-variant text-[11px]">
+                                    <?= date('M j, Y', strtotime($u['created_at'])) ?>
+                                </td>
+
+                                <!-- Actions: Change Role Modal Trigger -->
+                                <td class="py-4 px-6 text-right whitespace-nowrap">
+                                    <button type="button" 
+                                            onclick='openRoleModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
+                                            class="px-3 py-1.5 rounded-lg border border-outline-variant/40 hover:bg-surface-container text-on-surface text-xs font-semibold inline-flex items-center gap-1.5 transition-colors">
+                                        <span class="material-symbols-outlined text-[16px]">manage_accounts</span>
+                                        <span>Change Role</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <footer class="p-6 text-center text-xs text-on-surface-variant border-t border-outline-variant/20">
+        <span>RTIH Intern – IT Technical Assignment &bull; TaskFlow</span>
+    </footer>
+</div>
+
+<!-- Change User Role Modal (Stitch Screen bb2c187ad5e645ad994858747ca28e23) -->
+<div id="roleModalBackdrop" 
+     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/40 backdrop-blur-sm transition-all duration-200 hidden opacity-0"
+     role="dialog" aria-modal="true">
+    
+    <div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-2xl p-6 relative overflow-hidden transition-all transform scale-95" id="roleModalCard">
+        
+        <div class="flex items-start justify-between pb-3 border-b border-outline-variant/30">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[22px]">manage_accounts</span>
+                </div>
+                <div>
+                    <span class="text-[11px] text-primary uppercase font-bold tracking-wider">Role Assignment</span>
+                    <h3 class="font-heading text-lg font-bold text-on-surface">Change User Role</h3>
+                </div>
+            </div>
+            <button type="button" onclick="closeRoleModal()" class="text-outline hover:text-on-surface p-1">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <form action="<?= BASE_URL ?>/public/actions/admin-role.php?action=update-role" method="POST" class="mt-4 flex flex-col gap-4">
+            <?= csrf_field() ?>
+            <input type="hidden" name="user_id" id="role_user_id" value="">
+
+            <!-- Target User Banner -->
+            <div class="p-3 rounded-lg bg-surface-container-low flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center" id="roleUserInitial">
+                    U
+                </div>
+                <div class="truncate">
+                    <p class="text-xs font-semibold text-on-surface truncate" id="roleUserName">User Name</p>
+                    <p class="text-[11px] text-on-surface-variant truncate" id="roleUserEmail">user@email.com</p>
+                </div>
+            </div>
+
+            <!-- Role Select -->
+            <div class="flex flex-col gap-1.5">
+                <label for="new_role" class="text-xs font-semibold text-on-surface uppercase tracking-wider">Assign Role</label>
+                <div class="relative flex items-center">
+                    <select name="new_role" id="new_role"
+                            class="w-full pl-3.5 pr-10 py-2.5 bg-surface-container-low text-on-surface text-sm rounded-lg border border-outline-variant/30 focus:border-primary focus:bg-surface-container-lowest outline-none appearance-none cursor-pointer">
+                        <option value="user">Standard User (Restricted to own tasks)</option>
+                        <option value="admin">Administrator (Full oversight across all tasks & users)</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-3 pointer-events-none text-on-surface-variant text-[20px]">expand_more</span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-outline-variant/30">
+                <button type="button" onclick="closeRoleModal()"
+                        class="px-4 py-2.5 rounded-lg text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-on-primary text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">save</span>
+                    <span>Update Role</span>
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+function openRoleModal(userData) {
+    document.getElementById('role_user_id').value = userData.id;
+    document.getElementById('roleUserName').textContent = userData.name;
+    document.getElementById('roleUserEmail').textContent = userData.email;
+    document.getElementById('roleUserInitial').textContent = userData.name.charAt(0).toUpperCase();
+    document.getElementById('new_role').value = userData.role;
+
+    const backdrop = document.getElementById('roleModalBackdrop');
+    const card = document.getElementById('roleModalCard');
+    backdrop.classList.remove('hidden');
+    setTimeout(() => {
+        backdrop.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+        card.classList.add('scale-100');
+    }, 10);
+}
+
+function closeRoleModal() {
+    const backdrop = document.getElementById('roleModalBackdrop');
+    const card = document.getElementById('roleModalCard');
+    backdrop.classList.add('opacity-0');
+    card.classList.remove('scale-100');
+    card.classList.add('scale-95');
+    setTimeout(() => {
+        backdrop.classList.add('hidden');
+    }, 200);
+}
+</script>
+
+<?php require_once __DIR__ . '/../layouts/footer.php'; ?>
