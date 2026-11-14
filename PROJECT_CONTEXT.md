@@ -358,6 +358,7 @@ c:\xampp\htdocs\task-tracker\
 - [x] Telugu & Indian Seed Profiles: Admin Boddeda Prudhvi (`prudhviboddeda5@gmail.com`) with 4 personal tasks; Standard users Kalyan Varma, Ananya Rao, and Suresh Reddy with everyday tasks.
 - [x] Distinct Strong Passwords per seed account: Individual NIST/CISA compliant passwords meeting all 5 rules with zero personal info reuse.
 - [x] Admin User Directory Task Inspection: Clicking on any user in User Directory & Access Control opens an interactive modal revealing that user's full task details.
+- [x] Task Details Inspection Popup: Clicking on any task in the tasks list pops up a detailed modal showing the full task name, complete description, status chip, priority tag, due date, created date, and quick actions.
 - [x] Actions Column Cleanliness: Removed legacy tick mark from Actions column beside the delete option; task status is cleanly updated via the dedicated status badge and title popup.
 - [x] Testing & Verification: Execution of test matrix covering all levels and edge cases.
 - [x] Submission Deliverables: `database.sql`, `README.md` with setup guide and test accounts, screenshots.

@@ -181,16 +181,19 @@ $user = auth_user();
                                 $isCompleted = ($task['status'] === 'Completed');
                             ?>
                             <tr class="transition-colors <?= $isCompleted ? 'bg-emerald-50/25 hover:bg-emerald-50/40 border-l-4 border-l-emerald-500' : 'hover:bg-surface-container-low/50' ?>">
-                                <!-- Task -->
-                                <td class="py-4 px-6 max-w-xs">
+                                <!-- Task (Clickable to view full details popup) -->
+                                <td class="py-4 px-6 max-w-xs cursor-pointer group/task"
+                                    onclick='openTaskDetailsModal(<?= htmlspecialchars(json_encode($task), ENT_QUOTES, 'UTF-8') ?>)'
+                                    title="Click to view full task details">
                                     <div class="flex items-center gap-2">
                                         <?php if ($isCompleted): ?>
                                         <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                                             <span class="material-symbols-outlined text-[14px]">check</span>
                                         </span>
                                         <?php endif; ?>
-                                        <span class="font-semibold text-on-surface text-sm block leading-snug">
+                                        <span class="font-semibold text-on-surface text-sm block leading-snug group-hover/task:text-primary transition-colors flex items-center gap-1">
                                             <?= e($task['title']) ?>
+                                            <span class="material-symbols-outlined text-[14px] text-outline opacity-0 group-hover/task:opacity-100 transition-opacity">info</span>
                                         </span>
                                     </div>
                                     <?php if (!empty($task['description'])): ?>
@@ -331,4 +334,7 @@ $user = auth_user();
     </footer>
 </div>
 
-<?php require_once __DIR__ . '/../layouts/footer.php'; ?>
+<?php 
+require_once __DIR__ . '/../tasks/components/modal-task-details.php';
+require_once __DIR__ . '/../layouts/footer.php'; 
+?>

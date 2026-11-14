@@ -217,21 +217,24 @@ $user = auth_user();
                             ?>
                             <tr class="transition-colors group <?= $isCompleted ? 'bg-emerald-50/30 border-l-4 border-l-emerald-500 hover:bg-emerald-50/50' : 'hover:bg-surface-container-low/50 border-l-4 border-l-transparent' ?>">
                                 
-                                <!-- Title & Description -->
+                                <!-- Title & Description (Clickable to view full details popup) -->
                                 <td class="py-4 px-6 max-w-md">
                                     <div class="flex flex-col">
                                         <div class="flex flex-wrap items-center gap-2">
-                                            <span class="font-semibold text-on-surface text-sm leading-snug flex items-center gap-1.5">
+                                            <span onclick='openTaskDetailsModal(<?= htmlspecialchars(json_encode($task), ENT_QUOTES, 'UTF-8') ?>)'
+                                                  class="font-semibold text-on-surface text-sm leading-snug flex items-center gap-1.5 cursor-pointer hover:text-primary transition-colors group/title"
+                                                  title="Click to view task details">
                                                 <?php if ($isCompleted): ?>
                                                 <span class="material-symbols-outlined text-emerald-600 text-[18px]" title="Completed task">check_circle</span>
                                                 <?php endif; ?>
                                                 <?= e($task['title']) ?>
+                                                <span class="material-symbols-outlined text-[14px] text-outline opacity-0 group-hover/title:opacity-100 transition-opacity">info</span>
                                             </span>
 
                                             <!-- Interactive Quick Status Popup Trigger (Feature 1) -->
                                             <?php if (!$isCompleted): ?>
                                             <button type="button" 
-                                                    onclick="openStatusChangeModal(<?= $task['id'] ?>, '<?= e(addslashes($task['title'])) ?>', '<?= $task['status'] ?>')"
+                                                    onclick="event.stopPropagation(); openStatusChangeModal(<?= $task['id'] ?>, '<?= e(addslashes($task['title'])) ?>', '<?= $task['status'] ?>')"
                                                     class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300 shadow-sm transition-all cursor-pointer"
                                                     title="Click to quickly update status without opening edit details">
                                                 <span class="material-symbols-outlined text-[13px]">done_all</span>
@@ -239,7 +242,7 @@ $user = auth_user();
                                             </button>
                                             <?php else: ?>
                                             <button type="button" 
-                                                    onclick="openStatusChangeModal(<?= $task['id'] ?>, '<?= e(addslashes($task['title'])) ?>', '<?= $task['status'] ?>')"
+                                                    onclick="event.stopPropagation(); openStatusChangeModal(<?= $task['id'] ?>, '<?= e(addslashes($task['title'])) ?>', '<?= $task['status'] ?>')"
                                                     class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer"
                                                     title="Change task status">
                                                 <span class="material-symbols-outlined text-[12px]">swap_horiz</span>
@@ -249,7 +252,9 @@ $user = auth_user();
                                         </div>
 
                                         <?php if (!empty($task['description'])): ?>
-                                        <span class="text-xs text-on-surface-variant mt-1 line-clamp-1">
+                                        <span onclick='openTaskDetailsModal(<?= htmlspecialchars(json_encode($task), ENT_QUOTES, 'UTF-8') ?>)'
+                                              class="text-xs text-on-surface-variant mt-1 line-clamp-1 cursor-pointer hover:text-on-surface transition-colors"
+                                              title="Click to view full description">
                                             <?= e($task['description']) ?>
                                         </span>
                                         <?php endif; ?>
@@ -403,5 +408,6 @@ $user = auth_user();
 require_once __DIR__ . '/components/modal-task.php';
 require_once __DIR__ . '/components/modal-delete.php';
 require_once __DIR__ . '/components/modal-status.php';
+require_once __DIR__ . '/components/modal-task-details.php';
 require_once __DIR__ . '/../layouts/footer.php'; 
 ?>

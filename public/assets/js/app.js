@@ -10,8 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
             closeTaskModal();
             closeDeleteModal();
             closeStatusModal();
+            closeTaskDetailsModal();
             if (typeof closeRoleModal === 'function') {
                 closeRoleModal();
+            }
+            if (typeof closeUserTasksModal === 'function') {
+                closeUserTasksModal();
             }
         }
     });
@@ -40,6 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
         statusBackdrop.addEventListener('click', (e) => {
             if (e.target === statusBackdrop) {
                 closeStatusModal();
+            }
+        });
+    }
+
+    const taskDetailsBackdrop = document.getElementById('taskDetailsBackdrop');
+    if (taskDetailsBackdrop) {
+        taskDetailsBackdrop.addEventListener('click', (e) => {
+            if (e.target === taskDetailsBackdrop) {
+                closeTaskDetailsModal();
             }
         });
     }
@@ -251,4 +264,150 @@ function closeStatusModal() {
 function submitQuickStatus(targetStatus) {
     document.getElementById('status_target_val').value = targetStatus;
     document.getElementById('quickStatusForm').submit();
+}
+
+/**
+ * Open Task Details Inspection Modal
+ */
+function openTaskDetailsModal(task) {
+    if (!task) return;
+
+    const titleEl = document.getElementById('taskDetailsTitle');
+    if (titleEl) titleEl.textContent = task.title || 'Untitled Task';
+    
+    // Detailed Description
+    const descEl = document.getElementById('taskDetailsDesc');
+    if (descEl) {
+        if (task.description && task.description.trim() !== '') {
+            descEl.textContent = task.description;
+            descEl.classList.remove('italic', 'text-on-surface-variant');
+            descEl.classList.add('text-on-surface');
+        } else {
+            descEl.textContent = 'No detailed description provided for this task.';
+            descEl.classList.add('italic', 'text-on-surface-variant');
+            descEl.classList.remove('text-on-surface');
+        }
+    }
+
+    // Status Badge
+    const statusBadge = document.getElementById('taskDetailsStatusBadge');
+    const statusText = document.getElementById('taskDetailsStatusText');
+    if (statusBadge && statusText) {
+        statusText.textContent = task.status || 'Pending';
+        const dot = statusBadge.querySelector('span:first-child');
+        if (task.status === 'Completed') {
+            statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#dcfce7] text-[#166534]';
+            if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[#16a34a]';
+        } else if (task.status === 'In Progress') {
+            statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#e0f2fe] text-[#075985]';
+            if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[#0284c7]';
+        } else {
+            statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#fef3c7] text-[#92400e]';
+            if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[#f59e0b]';
+        }
+    }
+
+    // Priority Badge
+    const priorityBadge = document.getElementById('taskDetailsPriorityBadge');
+    if (priorityBadge) {
+        priorityBadge.textContent = task.priority || 'Medium';
+        if (task.priority === 'High') {
+            priorityBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-red-100 text-red-800';
+        } else if (task.priority === 'Medium') {
+            priorityBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-orange-100 text-orange-800';
+        } else {
+            priorityBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-800';
+        }
+    }
+
+    // Due Date
+    const dueDateEl = document.getElementById('taskDetailsDueDate');
+    if (dueDateEl) {
+        if (task.due_date) {
+            dueDateEl.textContent = task.due_date;
+            dueDateEl.classList.remove('text-outline');
+        } else {
+            dueDateEl.textContent = 'No deadline';
+            dueDateEl.classList.add('text-outline');
+        }
+    }
+
+    // Created Date
+    const createdEl = document.getElementById('taskDetailsCreatedDate');
+    if (createdEl) {
+        createdEl.textContent = task.created_at ? task.created_at.substring(0, 16) : '—';
+    }
+
+    // Owner (if present for admin view)
+    const ownerRow = document.getElementById('taskDetailsOwnerRow');
+    if (ownerRow) {
+        if (task.owner_name) {
+            ownerRow.classList.remove('hidden');
+            const ownerNameEl = document.getElementById('taskDetailsOwnerName');
+            const ownerEmailEl = document.getElementById('taskDetailsOwnerEmail');
+            const ownerInitEl = document.getElementById('taskDetailsOwnerInitial');
+            if (ownerNameEl) ownerNameEl.textContent = task.owner_name;
+            if (ownerEmailEl) ownerEmailEl.textContent = task.owner_email || '';
+            if (ownerInitEl) ownerInitEl.textContent = task.owner_name.charAt(0).toUpperCase();
+        } else {
+            ownerRow.classList.add('hidden');
+        }
+    }
+
+    // Setup action buttons
+    const editBtn = document.getElementById('taskDetailsEditBtn');
+    if (editBtn) {
+        if (typeof openEditModal === 'function' && document.getElementById('taskModalBackdrop')) {
+            editBtn.classList.remove('hidden');
+            editBtn.onclick = () => {
+                closeTaskDetailsModal();
+                setTimeout(() => openEditModal(task), 200);
+            };
+        } else {
+            editBtn.classList.add('hidden');
+        }
+    }
+
+    const statusBtn = document.getElementById('taskDetailsQuickStatusBtn');
+    if (statusBtn) {
+        if (typeof openStatusChangeModal === 'function' && document.getElementById('statusModalBackdrop')) {
+            statusBtn.classList.remove('hidden');
+            statusBtn.onclick = () => {
+                closeTaskDetailsModal();
+                setTimeout(() => openStatusChangeModal(task.id, task.title, task.status), 200);
+            };
+        } else {
+            statusBtn.classList.add('hidden');
+        }
+    }
+
+    // Show modal
+    const backdrop = document.getElementById('taskDetailsBackdrop');
+    const card = document.getElementById('taskDetailsCard');
+    if (backdrop && card) {
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+            backdrop.classList.remove('opacity-0');
+            card.classList.remove('scale-95');
+            card.classList.add('scale-100');
+        }, 10);
+    }
+}
+
+/**
+ * Close Task Details Inspection Modal
+ */
+function closeTaskDetailsModal() {
+    const backdrop = document.getElementById('taskDetailsBackdrop');
+    const card = document.getElementById('taskDetailsCard');
+    if (!backdrop || backdrop.classList.contains('hidden')) return;
+
+    backdrop.classList.add('opacity-0');
+    if (card) {
+        card.classList.remove('scale-100');
+        card.classList.add('scale-95');
+    }
+    setTimeout(() => {
+        backdrop.classList.add('hidden');
+    }, 200);
 }
