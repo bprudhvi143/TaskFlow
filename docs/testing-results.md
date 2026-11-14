@@ -12,9 +12,9 @@
 |---|---|---|---|---|---|
 | **Suite A** | Level 1 – Basic Task Management | 5 | 5 | 0 | **PASSED** |
 | **Suite B** | Level 2 – Status, Search & Validation | 8 | 8 | 0 | **PASSED** |
-| **Suite C** | Level 3 – Authentication, Security & RBAC | 9 | 9 | 0 | **PASSED** |
+| **Suite C** | Level 3 – Authentication, Security & RBAC | 10 | 10 | 0 | **PASSED** |
 | **Suite D** | Security & Tampering Resistance | 5 | 5 | 0 | **PASSED** |
-| **Total** | | **27** | **27** | **0** | **100% Pass** |
+| **Total** | | **28** | **28** | **0** | **100% Pass** |
 
 ---
 
@@ -61,6 +61,7 @@
 | **T-18** | Standard user admin route access | Logged-in standard user navigates to `/public/index.php?page=admin-users`. | Access blocked; redirected to `/dashboard` with authorization warning. | Redirected with flash: "Unauthorized: Administrative access required." | PASS |
 | **T-23** | 5 Strong Password Rules Validation | Attempt to register with password missing uppercase, number, or special symbol (`secretpass`). | Form blocks submission and server returns error listing missing criteria. | Rejected with: "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character." | PASS |
 | **T-24** | Personal Info Restriction in Password | Attempt to register as "Kalyan Varma" (`kalyan@gmail.com`) with password `Kalyan@2026!`. | Server validation detects user's name in password and rejects. | Rejected with: "Password cannot contain parts of your name or email address." | PASS |
+| **T-28** | Admin User Task Inspection Modal | In Admin User Directory, click on user Kalyan Varma (or "Tasks" button). | Modal opens displaying Kalyan Varma's 5 tasks with titles, status chips, priorities, and due dates. | User task details modal rendered cleanly with workload counters; matches DB. | PASS |
 
 ---
 

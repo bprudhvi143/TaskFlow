@@ -47,6 +47,11 @@ class AdminController {
         $role   = trim($_GET['role'] ?? '');
 
         $users = User::getAllWithTaskCount($role, $search);
+        foreach ($users as &$u) {
+            $u['tasks'] = Task::findByUser((int)$u['id'], 100, 0);
+        }
+        unset($u);
+
         $totalUsers = User::countAll();
 
         require_once __DIR__ . '/../views/admin/users.php';

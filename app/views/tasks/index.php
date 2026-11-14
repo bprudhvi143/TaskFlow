@@ -316,19 +316,6 @@ $user = auth_user();
                                 <td class="py-4 px-6 text-right whitespace-nowrap">
                                     <div class="inline-flex items-center gap-1">
                                         
-                                        <!-- Quick Status Toggle Button -->
-                                        <?php if (!$isCompleted): ?>
-                                        <form action="<?= BASE_URL ?>/public/actions/task-status.php" method="POST" class="m-0 inline">
-                                            <?= csrf_field() ?>
-                                            <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
-                                            <input type="hidden" name="status" value="Completed">
-                                            <button type="submit" title="Mark as Completed"
-                                                    class="w-7 h-7 rounded-lg text-emerald-700 hover:bg-emerald-50 flex items-center justify-center transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">check</span>
-                                            </button>
-                                        </form>
-                                        <?php endif; ?>
-
                                         <!-- Edit Modal Trigger -->
                                         <button type="button" 
                                                 onclick='openEditModal(<?= htmlspecialchars(json_encode($task), ENT_QUOTES, 'UTF-8') ?>)'

@@ -97,14 +97,16 @@ $currentUser = auth_user();
                         <tbody class="divide-y divide-outline-variant/20 text-xs text-on-surface">
                             <?php foreach ($users as $u): ?>
                             <tr class="hover:bg-surface-container-low/50 transition-colors">
-                                <!-- Identity -->
+                                <!-- Identity (Clickable to view tasks) -->
                                 <td class="py-4 px-6 whitespace-nowrap">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl bg-surface-container text-primary font-bold text-sm flex items-center justify-center shrink-0">
+                                    <div class="flex items-center gap-3 cursor-pointer group"
+                                         onclick='openUserTasksModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
+                                         title="Click to view <?= e($u['name']) ?>'s task details">
+                                        <div class="w-9 h-9 rounded-xl bg-surface-container text-primary font-bold text-sm flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-on-primary transition-colors">
                                             <?= strtoupper(substr($u['name'], 0, 1)) ?>
                                         </div>
                                         <div>
-                                            <span class="font-semibold text-on-surface text-sm block leading-tight">
+                                            <span class="font-semibold text-on-surface text-sm block leading-tight group-hover:text-primary transition-colors">
                                                 <?= e($u['name']) ?>
                                                 <?php if ((int)$u['id'] === (int)$currentUser['id']): ?>
                                                 <span class="ml-1 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-normal">(You)</span>
@@ -130,17 +132,20 @@ $currentUser = auth_user();
                                     <?php endif; ?>
                                 </td>
 
-                                <!-- Workload Metrics -->
+                                <!-- Workload Metrics (Clickable to view tasks) -->
                                 <td class="py-4 px-4 whitespace-nowrap">
-                                    <div class="flex items-center gap-3">
-                                        <span class="font-semibold text-on-surface"><?= $u['total_tasks'] ?> total</span>
-                                        <span class="text-[11px] text-sky-800 bg-sky-50 px-2 py-0.5 rounded">
+                                    <button type="button" 
+                                            onclick='openUserTasksModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
+                                            class="flex items-center gap-2 hover:opacity-80 transition-opacity text-left"
+                                            title="Click to inspect task list">
+                                        <span class="font-semibold text-on-surface text-xs bg-surface-container px-2 py-0.5 rounded"><?= $u['total_tasks'] ?> total</span>
+                                        <span class="text-[11px] text-sky-800 bg-sky-50 px-2 py-0.5 rounded font-medium">
                                             <?= $u['in_progress_tasks'] ?? 0 ?> in progress
                                         </span>
-                                        <span class="text-[11px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
+                                        <span class="text-[11px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded font-medium">
                                             <?= $u['completed_tasks'] ?? 0 ?> done
                                         </span>
-                                    </div>
+                                    </button>
                                 </td>
 
                                 <!-- Joined Date -->
@@ -148,14 +153,23 @@ $currentUser = auth_user();
                                     <?= date('M j, Y', strtotime($u['created_at'])) ?>
                                 </td>
 
-                                <!-- Actions: Change Role Modal Trigger -->
+                                <!-- Actions: View Tasks & Change Role -->
                                 <td class="py-4 px-6 text-right whitespace-nowrap">
-                                    <button type="button" 
-                                            onclick='openRoleModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
-                                            class="px-3 py-1.5 rounded-lg border border-outline-variant/40 hover:bg-surface-container text-on-surface text-xs font-semibold inline-flex items-center gap-1.5 transition-colors">
-                                        <span class="material-symbols-outlined text-[16px]">manage_accounts</span>
-                                        <span>Change Role</span>
-                                    </button>
+                                    <div class="inline-flex items-center justify-end gap-2">
+                                        <button type="button" 
+                                                onclick='openUserTasksModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
+                                                class="px-2.5 py-1.5 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-on-primary text-xs font-semibold inline-flex items-center gap-1 transition-all"
+                                                title="View user's task details">
+                                            <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                            <span>Tasks</span>
+                                        </button>
+                                        <button type="button" 
+                                                onclick='openRoleModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
+                                                class="px-2.5 py-1.5 rounded-lg border border-outline-variant/40 hover:bg-surface-container text-on-surface text-xs font-semibold inline-flex items-center gap-1 transition-colors">
+                                            <span class="material-symbols-outlined text-[16px]">manage_accounts</span>
+                                            <span>Role</span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -238,6 +252,63 @@ $currentUser = auth_user();
     </div>
 </div>
 
+<!-- User Tasks Inspection Modal -->
+<div id="userTasksModalBackdrop" 
+     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/40 backdrop-blur-sm transition-all duration-200 hidden opacity-0"
+     role="dialog" aria-modal="true">
+    
+    <div class="w-full max-w-2xl bg-surface-container-lowest rounded-2xl shadow-2xl p-6 relative overflow-hidden transition-all transform scale-95 flex flex-col max-h-[85vh]" id="userTasksModalCard">
+        
+        <!-- Modal Header -->
+        <div class="flex items-start justify-between pb-4 border-b border-outline-variant/30">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary font-bold text-base flex items-center justify-center shrink-0" id="userTaskModalInitial">
+                    U
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-heading text-lg font-bold text-on-surface" id="userTaskModalName">User Tasks</h3>
+                        <span id="userTaskModalRoleBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-surface-container text-on-surface-variant">User</span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant" id="userTaskModalEmail">user@email.com</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeUserTasksModal()" class="text-outline hover:text-on-surface p-1 rounded-lg hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+        </div>
+
+        <!-- Summary Metric Row -->
+        <div class="py-3 px-1 flex flex-wrap items-center gap-2 border-b border-outline-variant/20 text-xs">
+            <span class="font-semibold text-on-surface-variant uppercase text-[10px] tracking-wider mr-1">Workload:</span>
+            <span id="userTaskSummaryTotal" class="px-2.5 py-1 rounded-md bg-surface-container text-on-surface font-semibold text-xs">0 Total</span>
+            <span id="userTaskSummaryInProgress" class="px-2.5 py-1 rounded-md bg-sky-50 text-sky-800 font-medium text-xs">0 In Progress</span>
+            <span id="userTaskSummaryCompleted" class="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 font-medium text-xs">0 Done</span>
+            <span id="userTaskSummaryPending" class="px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 font-medium text-xs">0 Pending</span>
+        </div>
+
+        <!-- Task List Content Area -->
+        <div class="flex-1 overflow-y-auto py-3 space-y-2.5 pr-1" id="userTasksModalList">
+            <!-- Dynamically populated via openUserTasksModal() -->
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-between pt-3 border-t border-outline-variant/30 mt-2">
+            <a id="userTasksAllConsoleLink" href="#"
+               class="px-3.5 py-2 rounded-lg bg-surface-container-high hover:bg-primary hover:text-on-primary text-xs font-semibold inline-flex items-center gap-1.5 transition-colors">
+                <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                <span>Open in All Tasks Console</span>
+            </a>
+
+            <button type="button" onclick="closeUserTasksModal()"
+                    class="px-4 py-2 rounded-lg text-xs font-semibold text-on-surface bg-surface-container hover:bg-surface-container-high transition-colors">
+                Close
+            </button>
+        </div>
+
+    </div>
+</div>
+
 <script>
 function openRoleModal(userData) {
     document.getElementById('role_user_id').value = userData.id;
@@ -266,6 +337,134 @@ function closeRoleModal() {
         backdrop.classList.add('hidden');
     }, 200);
 }
+
+function openUserTasksModal(userData) {
+    document.getElementById('userTaskModalName').textContent = userData.name;
+    document.getElementById('userTaskModalEmail').textContent = userData.email;
+    document.getElementById('userTaskModalInitial').textContent = userData.name.charAt(0).toUpperCase();
+    
+    // Role badge
+    const roleBadge = document.getElementById('userTaskModalRoleBadge');
+    if (userData.role === 'admin') {
+        roleBadge.textContent = 'Administrator';
+        roleBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary text-on-primary';
+    } else {
+        roleBadge.textContent = 'Standard User';
+        roleBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-surface-container text-on-surface-variant border border-outline-variant/40';
+    }
+
+    const tasks = userData.tasks || [];
+    const inProgressCount = tasks.filter(t => t.status === 'In Progress').length;
+    const completedCount = tasks.filter(t => t.status === 'Completed').length;
+    const pendingCount = tasks.filter(t => t.status === 'Pending').length;
+
+    document.getElementById('userTaskSummaryTotal').textContent = `${tasks.length} Total`;
+    document.getElementById('userTaskSummaryInProgress').textContent = `${inProgressCount} In Progress`;
+    document.getElementById('userTaskSummaryCompleted').textContent = `${completedCount} Done`;
+    document.getElementById('userTaskSummaryPending').textContent = `${pendingCount} Pending`;
+
+    // Console link
+    document.getElementById('userTasksAllConsoleLink').href = '<?= BASE_URL ?>/public/index.php?page=admin-tasks&search=' + encodeURIComponent(userData.name);
+
+    // Render task items
+    const listEl = document.getElementById('userTasksModalList');
+    listEl.innerHTML = '';
+
+    if (tasks.length === 0) {
+        listEl.innerHTML = `
+            <div class="py-12 text-center flex flex-col items-center justify-center">
+                <span class="material-symbols-outlined text-[36px] text-on-surface-variant/50 mb-2">inbox</span>
+                <p class="font-heading font-semibold text-sm text-on-surface">No tasks recorded</p>
+                <p class="text-xs text-on-surface-variant mt-1">This user currently has no personal tasks assigned or created.</p>
+            </div>
+        `;
+    } else {
+        tasks.forEach(t => {
+            const isCompleted = (t.status === 'Completed');
+            let statusBadge = '';
+            if (t.status === 'Completed') {
+                statusBadge = '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#dcfce7] text-[#166534]"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>Completed</span>';
+            } else if (t.status === 'In Progress') {
+                statusBadge = '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#e0f2fe] text-[#075985]"><span class="w-1.5 h-1.5 rounded-full bg-[#0284c7]"></span>In Progress</span>';
+            } else {
+                statusBadge = '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#fef3c7] text-[#92400e]"><span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"></span>Pending</span>';
+            }
+
+            let priorityBadge = '';
+            if (t.priority === 'High') {
+                priorityBadge = '<span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-800">High</span>';
+            } else if (t.priority === 'Medium') {
+                priorityBadge = '<span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-orange-100 text-orange-800">Medium</span>';
+            } else {
+                priorityBadge = '<span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800">Low</span>';
+            }
+
+            const dueDate = t.due_date ? `<span class="inline-flex items-center gap-1 text-[11px] text-on-surface-variant"><span class="material-symbols-outlined text-[13px]">event</span>${t.due_date}</span>` : '<span class="text-[11px] text-outline">No date</span>';
+
+            const card = document.createElement('div');
+            card.className = `p-3.5 rounded-xl border transition-all ${isCompleted ? 'bg-emerald-50/20 border-emerald-300' : 'bg-surface-container-low border-outline-variant/30 hover:border-primary/40'}`;
+            card.innerHTML = `
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            ${isCompleted ? '<span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[12px]">check</span></span>' : ''}
+                            <h4 class="font-semibold text-xs sm:text-sm text-on-surface leading-snug">${escapeHtml(t.title)}</h4>
+                        </div>
+                        ${t.description ? `<p class="text-xs text-on-surface-variant mt-1 ${isCompleted ? 'pl-6' : ''} line-clamp-2">${escapeHtml(t.description)}</p>` : ''}
+                    </div>
+                    <div class="flex flex-col items-end gap-1.5 shrink-0">
+                        ${statusBadge}
+                        <div class="flex items-center gap-1.5">
+                            ${priorityBadge}
+                            ${dueDate}
+                        </div>
+                    </div>
+                </div>
+            `;
+            listEl.appendChild(card);
+        });
+    }
+
+    const backdrop = document.getElementById('userTasksModalBackdrop');
+    const card = document.getElementById('userTasksModalCard');
+    backdrop.classList.remove('hidden');
+    setTimeout(() => {
+        backdrop.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+        card.classList.add('scale-100');
+    }, 10);
+}
+
+function closeUserTasksModal() {
+    const backdrop = document.getElementById('userTasksModalBackdrop');
+    const card = document.getElementById('userTasksModalCard');
+    backdrop.classList.add('opacity-0');
+    card.classList.remove('scale-100');
+    card.classList.add('scale-95');
+    setTimeout(() => {
+        backdrop.classList.add('hidden');
+    }, 200);
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+// Close modals on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeRoleModal();
+        closeUserTasksModal();
+    }
+});
 </script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

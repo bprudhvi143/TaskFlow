@@ -93,15 +93,27 @@ $activeTab = $_GET['tab'] ?? 'signin';
 
                         <!-- Quick Credentials Pills for Evaluation -->
                         <div class="pt-1 pb-1">
-                            <span class="text-[11px] font-semibold text-on-surface-variant/80 uppercase tracking-wider block mb-1.5">Quick Test Profiles:</span>
+                            <span class="text-[11px] font-semibold text-on-surface-variant/80 uppercase tracking-wider block mb-1.5">Quick Test Profiles (Distinct Passwords):</span>
                             <div class="flex flex-wrap gap-2">
-                                <button type="button" onclick="fillCredentials('prudhviboddeda5@gmail.com', 'TaskFlow#2026Secure')"
-                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-primary font-semibold transition-colors flex items-center gap-1.5 border border-primary/20">
+                                <button type="button" onclick="fillCredentials('prudhviboddeda5@gmail.com', 'FalconShield#2026!Master')"
+                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-primary font-semibold transition-colors flex items-center gap-1.5 border border-primary/20"
+                                        title="Boddeda Prudhvi: FalconShield#2026!Master">
                                     <span class="w-2 h-2 rounded-full bg-primary"></span> Admin: Boddeda Prudhvi
                                 </button>
-                                <button type="button" onclick="fillCredentials('kalyan.varma@gmail.com', 'TaskFlow#2026Secure')"
-                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-on-surface font-medium transition-colors flex items-center gap-1.5">
+                                <button type="button" onclick="fillCredentials('kalyan.varma@gmail.com', 'SapphireWave@2026#Track')"
+                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-on-surface font-medium transition-colors flex items-center gap-1.5"
+                                        title="Kalyan Varma: SapphireWave@2026#Track">
                                     <span class="w-2 h-2 rounded-full bg-secondary"></span> User: Kalyan Varma
+                                </button>
+                                <button type="button" onclick="fillCredentials('ananya.rao@gmail.com', 'EmeraldPeak#2026$Nova')"
+                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-on-surface font-medium transition-colors flex items-center gap-1.5"
+                                        title="Ananya Rao: EmeraldPeak#2026$Nova">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span> User: Ananya Rao
+                                </button>
+                                <button type="button" onclick="fillCredentials('suresh.reddy@gmail.com', 'GoldenHorizon@2026!Hub')"
+                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-on-surface font-medium transition-colors flex items-center gap-1.5"
+                                        title="Suresh Reddy: GoldenHorizon@2026!Hub">
+                                    <span class="w-2 h-2 rounded-full bg-amber-600"></span> User: Suresh Reddy
                                 </button>
                             </div>
                         </div>

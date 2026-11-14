@@ -83,14 +83,14 @@ The frontend design is a 1:1 realization of the finalized Google Stitch UI (`Tas
 
 ## 4. Pre-configured Test Accounts
 
-The database comes pre-seeded with realistic, everyday test profiles adhering to the strong password security policy:
+The database comes pre-seeded with realistic, everyday test profiles adhering to the strong password security policy with unique passwords per account:
 
 | Role | Name | Email | Password | Sample Tasks / Scope |
 |---|---|---|---|---|
-| **Administrator** | Boddeda Prudhvi | `prudhviboddeda5@gmail.com` | `TaskFlow#2026Secure` | 4 personal tasks + Full administrative oversight (`/admin/tasks`, `/admin/users`). |
-| **Standard User** | Kalyan Varma | `kalyan.varma@gmail.com` | `TaskFlow#2026Secure` | 5 everyday tasks (groceries, electricity bill, doctor visit, car service, book renewal). |
-| **Standard User** | Ananya Rao | `ananya.rao@gmail.com` | `TaskFlow#2026Secure` | 3 everyday tasks (insurance policy, AC servicing, water filter maintenance). |
-| **Standard User** | Suresh Reddy | `suresh.reddy@gmail.com` | `TaskFlow#2026Secure` | 3 everyday tasks (Wi-Fi recharge, medicine restock, property tax payment). Demonstrates cross-user isolation. |
+| **Administrator** | Boddeda Prudhvi | `prudhviboddeda5@gmail.com` | `FalconShield#2026!Master` | 4 personal tasks + Full administrative oversight (`/admin/tasks`, `/admin/users`). |
+| **Standard User** | Kalyan Varma | `kalyan.varma@gmail.com` | `SapphireWave@2026#Track` | 5 everyday tasks (groceries, electricity bill, doctor visit, car service, book renewal). |
+| **Standard User** | Ananya Rao | `ananya.rao@gmail.com` | `EmeraldPeak#2026$Nova` | 3 everyday tasks (insurance policy, AC servicing, water filter maintenance). |
+| **Standard User** | Suresh Reddy | `suresh.reddy@gmail.com` | `GoldenHorizon@2026!Hub` | 3 everyday tasks (Wi-Fi recharge, medicine restock, property tax payment). Demonstrates cross-user isolation. |
 
 *Quick-fill profile buttons are provided directly on the sign-in screen for one-click testing.*
 
@@ -151,10 +151,10 @@ http://localhost/task-tracker/
 ```
 You will be directed to the authentication screen. Click one of the quick test buttons or log in with:
 - **Email:** `kalyan.varma@gmail.com`
-- **Password:** `TaskFlow#2026Secure`
+- **Password:** `SapphireWave@2026#Track`
 Or for Administrator oversight:
 - **Email:** `prudhviboddeda5@gmail.com`
-- **Password:** `TaskFlow#2026Secure`
+- **Password:** `FalconShield#2026!Master`
 
 ---
 

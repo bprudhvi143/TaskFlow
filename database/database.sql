@@ -49,15 +49,17 @@ CREATE TABLE IF NOT EXISTS `tasks` (
 
 -- --------------------------------------------------------
 -- 1. Seed Users (Indian / Telugu Names, Popular Email Providers)
--- Seed Password for all accounts: TaskFlow#2026Secure
--- Hash: $2y$10$yU7L14BwZiOSXAzOIbOn.eT8Sgf9rGlEVLEOuzVEGLDsjKx9VMx9e
--- Meets all 5 password rules (Length >= 8, Uppercase, Lowercase, Number, Symbol, No Name)
+-- Distinct strong passwords set as per rules (Length >= 8, Uppercase, Lowercase, Number, Symbol, No Name):
+-- Boddeda Prudhvi (admin): FalconShield#2026!Master -> $2y$10$4t4PyhsrwHxtv4QwTJj.5.4cLyAVoiONBKYfjbjJgMxAn8hoMoRv6
+-- Kalyan Varma    (user):  SapphireWave@2026#Track  -> $2y$10$G5Oozr1EFqpnLza3W3Hmuu18pFunu573gO1c53LL5fnMw3u8SWMGG
+-- Ananya Rao      (user):  EmeraldPeak#2026$Nova   -> $2y$10$OZQiG4vijYz9hD.eiXV8o.jYBND5CGEq7.rP/vxkZE/ZC/jzJ8hgm
+-- Suresh Reddy    (user):  GoldenHorizon@2026!Hub  -> $2y$10$ibVlI3c7gHmb1Nn7cndwdOoONizGfFuCrmS3O1Wsu98SaXFZPm4HW
 -- --------------------------------------------------------
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
-(1, 'Boddeda Prudhvi', 'prudhviboddeda5@gmail.com', '$2y$10$yU7L14BwZiOSXAzOIbOn.eT8Sgf9rGlEVLEOuzVEGLDsjKx9VMx9e', 'admin', NOW()),
-(2, 'Kalyan Varma', 'kalyan.varma@gmail.com', '$2y$10$yU7L14BwZiOSXAzOIbOn.eT8Sgf9rGlEVLEOuzVEGLDsjKx9VMx9e', 'user', NOW()),
-(3, 'Ananya Rao', 'ananya.rao@gmail.com', '$2y$10$yU7L14BwZiOSXAzOIbOn.eT8Sgf9rGlEVLEOuzVEGLDsjKx9VMx9e', 'user', NOW()),
-(4, 'Suresh Reddy', 'suresh.reddy@gmail.com', '$2y$10$yU7L14BwZiOSXAzOIbOn.eT8Sgf9rGlEVLEOuzVEGLDsjKx9VMx9e', 'user', NOW());
+(1, 'Boddeda Prudhvi', 'prudhviboddeda5@gmail.com', '$2y$10$4t4PyhsrwHxtv4QwTJj.5.4cLyAVoiONBKYfjbjJgMxAn8hoMoRv6', 'admin', NOW()),
+(2, 'Kalyan Varma', 'kalyan.varma@gmail.com', '$2y$10$G5Oozr1EFqpnLza3W3Hmuu18pFunu573gO1c53LL5fnMw3u8SWMGG', 'user', NOW()),
+(3, 'Ananya Rao', 'ananya.rao@gmail.com', '$2y$10$OZQiG4vijYz9hD.eiXV8o.jYBND5CGEq7.rP/vxkZE/ZC/jzJ8hgm', 'user', NOW()),
+(4, 'Suresh Reddy', 'suresh.reddy@gmail.com', '$2y$10$ibVlI3c7gHmb1Nn7cndwdOoONizGfFuCrmS3O1Wsu98SaXFZPm4HW', 'user', NOW());
 
 -- --------------------------------------------------------
 -- 2. Tasks for Administrator Boddeda Prudhvi (user_id = 1)
