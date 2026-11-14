@@ -56,6 +56,10 @@
                                class="w-full px-3.5 py-2.5 bg-surface-container-low rounded-lg text-sm text-on-surface placeholder:text-outline border border-outline-variant/30 focus:border-primary focus:bg-surface-container-lowest focus:shadow-sm focus:outline-none transition-all"
                                placeholder="Enter task title (e.g. Prepare system test report)">
                     </div>
+                    <p id="titleInlineError" class="text-[11px] text-error font-medium flex items-center gap-1 hidden">
+                        <span class="material-symbols-outlined text-[14px]">error</span>
+                        <span>Task title is required and cannot be empty.</span>
+                    </p>
                     <p class="text-[11px] text-on-surface-variant flex items-center gap-1">
                         <span class="material-symbols-outlined text-[14px]">info</span>
                         Maximum 150 characters. Required.

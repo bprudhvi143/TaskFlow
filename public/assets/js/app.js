@@ -43,6 +43,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Interactive Frontend Validation for Task Creation & Editing
+    const taskForm = document.getElementById('taskForm');
+    if (taskForm) {
+        taskForm.addEventListener('submit', (e) => {
+            const titleInput = document.getElementById('task_title');
+            const inlineError = document.getElementById('titleInlineError');
+            if (titleInput && titleInput.value.trim() === '') {
+                e.preventDefault();
+                titleInput.classList.add('!border-error', 'bg-error/5');
+                if (inlineError) {
+                    inlineError.classList.remove('hidden');
+                }
+                titleInput.focus();
+                return false;
+            }
+        });
+    }
 });
 
 /**
@@ -61,6 +79,10 @@ function openCreateModal() {
     document.getElementById('taskModalBadgeText').textContent = 'New Entry';
     document.getElementById('taskModalSubmitText').textContent = 'Create Task';
     document.getElementById('titleCharCount').textContent = '0 / 150';
+    const inlineError = document.getElementById('titleInlineError');
+    if (inlineError) inlineError.classList.add('hidden');
+    const titleInput = document.getElementById('task_title');
+    if (titleInput) titleInput.classList.remove('!border-error', 'bg-error/5');
 
     const backdrop = document.getElementById('taskModalBackdrop');
     const card = document.getElementById('taskModalCard');
@@ -90,6 +112,11 @@ function openEditModal(task) {
     document.getElementById('status').value = task.status || 'Pending';
     document.getElementById('priority').value = task.priority || 'Medium';
     document.getElementById('due_date').value = task.due_date || '';
+
+    const inlineError = document.getElementById('titleInlineError');
+    if (inlineError) inlineError.classList.add('hidden');
+    const titleInput = document.getElementById('task_title');
+    if (titleInput) titleInput.classList.remove('!border-error', 'bg-error/5');
 
     updateTitleCount(document.getElementById('task_title'));
 
@@ -156,10 +183,20 @@ function closeDeleteModal() {
 }
 
 /**
- * Dynamic Title Character Counter (Stitch Validation Spec)
+ * Dynamic Title Character Counter & Validation Reset
  */
 function updateTitleCount(input) {
     const counter = document.getElementById('titleCharCount');
+    const inlineError = document.getElementById('titleInlineError');
+    if (input) {
+        if (input.value.trim() !== '') {
+            input.classList.remove('!border-error', 'bg-error/5');
+            if (inlineError) {
+                inlineError.classList.add('hidden');
+            }
+        }
+    }
+
     if (counter) {
         const len = input.value.length;
         counter.textContent = `${len} / 150`;
