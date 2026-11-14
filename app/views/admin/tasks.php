@@ -44,51 +44,67 @@ $user = auth_user();
                 </p>
             </div>
 
-            <!-- Global Summary Metrics -->
+            <!-- Global Summary Metrics (Clickable Filters) -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col justify-between">
+                <a href="<?= BASE_URL ?>/public/index.php?page=admin-tasks<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>"
+                   class="group p-5 rounded-xl bg-surface-container-lowest border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md flex flex-col justify-between <?= empty($status) ? 'border-primary ring-2 ring-primary/20 shadow-sm' : 'border-outline-variant/30 hover:border-primary/50' ?>"
+                   title="View all system tasks">
                     <div class="flex items-center justify-between text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
                         <span>Total Records</span>
-                        <span class="material-symbols-outlined text-[20px] text-primary">database</span>
+                        <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">database</span>
+                        </div>
                     </div>
                     <div class="mt-3">
                         <span class="font-heading text-2xl sm:text-3xl font-bold text-on-surface"><?= $metrics['total'] ?></span>
                         <span class="text-[11px] text-on-surface-variant block mt-0.5">Across all users</span>
                     </div>
-                </div>
+                </a>
 
-                <div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col justify-between">
+                <a href="<?= BASE_URL ?>/public/index.php?page=admin-tasks&status=In+Progress<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>"
+                   class="group p-5 rounded-xl bg-surface-container-lowest border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md flex flex-col justify-between <?= $status === 'In Progress' ? 'border-sky-500 ring-2 ring-sky-500/20 shadow-sm' : 'border-outline-variant/30 hover:border-sky-400' ?>"
+                   title="Filter tasks In Progress">
                     <div class="flex items-center justify-between text-xs font-semibold text-sky-800 uppercase tracking-wider">
                         <span>In Progress</span>
-                        <span class="material-symbols-outlined text-[20px] text-sky-700">pending</span>
+                        <div class="w-8 h-8 rounded-lg bg-sky-100 flex items-center justify-center text-sky-700 group-hover:bg-sky-700 group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">pending</span>
+                        </div>
                     </div>
                     <div class="mt-3">
                         <span class="font-heading text-2xl sm:text-3xl font-bold text-sky-900"><?= $metrics['in_progress'] ?></span>
                         <span class="text-[11px] text-sky-700 block mt-0.5">Active team workload</span>
                     </div>
-                </div>
+                </a>
 
-                <div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col justify-between">
+                <a href="<?= BASE_URL ?>/public/index.php?page=admin-tasks&status=Completed<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>"
+                   class="group p-5 rounded-xl bg-surface-container-lowest border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md flex flex-col justify-between <?= $status === 'Completed' ? 'border-emerald-500 ring-2 ring-emerald-500/20 shadow-sm' : 'border-outline-variant/30 hover:border-emerald-400' ?>"
+                   title="Filter Completed tasks">
                     <div class="flex items-center justify-between text-xs font-semibold text-emerald-800 uppercase tracking-wider">
                         <span>Completed</span>
-                        <span class="material-symbols-outlined text-[20px] text-emerald-700">task_alt</span>
+                        <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700 group-hover:bg-emerald-700 group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">task_alt</span>
+                        </div>
                     </div>
                     <div class="mt-3">
                         <span class="font-heading text-2xl sm:text-3xl font-bold text-emerald-900"><?= $metrics['completed'] ?></span>
                         <span class="text-[11px] text-emerald-700 block mt-0.5">Resolved tasks</span>
                     </div>
-                </div>
+                </a>
 
-                <div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm flex flex-col justify-between">
+                <a href="<?= BASE_URL ?>/public/index.php?page=admin-tasks&status=Pending<?= !empty($search) ? '&search=' . urlencode($search) : '' ?>"
+                   class="group p-5 rounded-xl bg-surface-container-lowest border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md flex flex-col justify-between <?= $status === 'Pending' ? 'border-amber-500 ring-2 ring-amber-500/20 shadow-sm' : 'border-outline-variant/30 hover:border-amber-400' ?>"
+                   title="Filter Pending tasks">
                     <div class="flex items-center justify-between text-xs font-semibold text-amber-800 uppercase tracking-wider">
                         <span>Pending</span>
-                        <span class="material-symbols-outlined text-[20px] text-amber-700">schedule</span>
+                        <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-700 group-hover:bg-amber-700 group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">schedule</span>
+                        </div>
                     </div>
                     <div class="mt-3">
                         <span class="font-heading text-2xl sm:text-3xl font-bold text-amber-900"><?= $metrics['pending'] ?></span>
                         <span class="text-[11px] text-amber-700 block mt-0.5">Queue backlog</span>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Filter & Search Controls -->
@@ -161,15 +177,24 @@ $user = auth_user();
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-outline-variant/20 text-xs text-on-surface">
-                            <?php foreach ($tasks as $task): ?>
-                            <tr class="hover:bg-surface-container-low/50 transition-colors">
+                            <?php foreach ($tasks as $task): 
+                                $isCompleted = ($task['status'] === 'Completed');
+                            ?>
+                            <tr class="transition-colors <?= $isCompleted ? 'bg-emerald-50/25 hover:bg-emerald-50/40 border-l-4 border-l-emerald-500' : 'hover:bg-surface-container-low/50' ?>">
                                 <!-- Task -->
                                 <td class="py-4 px-6 max-w-xs">
-                                    <span class="font-semibold text-on-surface text-sm block leading-snug">
-                                        <?= e($task['title']) ?>
-                                    </span>
+                                    <div class="flex items-center gap-2">
+                                        <?php if ($isCompleted): ?>
+                                        <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                                            <span class="material-symbols-outlined text-[14px]">check</span>
+                                        </span>
+                                        <?php endif; ?>
+                                        <span class="font-semibold text-on-surface text-sm block leading-snug">
+                                            <?= e($task['title']) ?>
+                                        </span>
+                                    </div>
                                     <?php if (!empty($task['description'])): ?>
-                                    <span class="text-xs text-on-surface-variant mt-0.5 line-clamp-1 block">
+                                    <span class="text-xs text-on-surface-variant mt-0.5 line-clamp-1 block <?= $isCompleted ? 'pl-7' : '' ?>">
                                         <?= e($task['description']) ?>
                                     </span>
                                     <?php endif; ?>
@@ -302,7 +327,7 @@ $user = auth_user();
     </div>
 
     <footer class="p-6 text-center text-xs text-on-surface-variant border-t border-outline-variant/20">
-        <span>RTIH Intern – IT Technical Assignment &bull; TaskFlow</span>
+        <span>TaskFlow – Task tracking application</span>
     </footer>
 </div>
 

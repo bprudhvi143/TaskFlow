@@ -41,7 +41,10 @@ The frontend design is a 1:1 realization of the finalized Google Stitch UI (`Tas
 
 ### Level 2 – Status, Search & Validation
 - [x] Three lifecycle states: `Pending`, `In Progress`, and `Completed`.
-- [x] Quick status toggle (one-click Mark Complete).
+- [x] Quick status popup modal beside task details allowing immediate status transition without opening the edit form.
+- [x] Sinking completed tasks: Completed tasks automatically sink to the bottom of the task list, preserving focus on active tasks.
+- [x] Completed task highlighting: No strikethrough (`line-through`); completed tasks feature soft emerald background tints, checkmarks, and green accents.
+- [x] Clickable metric filter cards: Total Tasks, In Progress, Completed, and Pending summary cards are interactive links that filter the task view.
 - [x] Real-time search filter querying tasks by title or description.
 - [x] Filter tasks by status dropdown (`Pending`, `In Progress`, `Completed`).
 - [x] Filter tasks by priority dropdown (`High`, `Medium`, `Low`).
@@ -49,7 +52,15 @@ The frontend design is a 1:1 realization of the finalized Google Stitch UI (`Tas
 - [x] Friendly error messaging matching Stitch validation states (empty title rejection, 150-char max enforcement).
 
 ### Level 3 – Authentication, Authorization & Security
-- [x] Unified login and user registration flows.
+- [x] Unified login and user registration flows (registration strictly restricted to `user` role).
+- [x] 5 Industry-Standard Strong Password Rules:
+  1. Minimum length of 8 characters (12+ recommended).
+  2. Uppercase letter required (`A-Z`).
+  3. Lowercase letter required (`a-z`).
+  4. Number / digit required (`0-9`).
+  5. Special symbol required (`!@#$%^&*()_+-=[]{}|;:,.<>?`).
+  6. Personal information restriction: Password cannot contain any part of the user's name or email address prefix.
+- [x] Interactive real-time password strength meter and checklist on the registration screen.
 - [x] Secure password storage using `password_hash()` (Bcrypt).
 - [x] Password verification using `password_verify()`.
 - [x] Session-based authentication protecting all dashboard routes.
@@ -57,27 +68,29 @@ The frontend design is a 1:1 realization of the finalized Google Stitch UI (`Tas
 - [x] Server-side ownership boundary: Queries strictly enforce `WHERE user_id = :session_user_id`. Users cannot view, modify, or delete another user's tasks by tampering with IDs or URL parameters.
 - [x] Role-Based Access Control (RBAC):
   - **Standard User:** Restricted strictly to their own personal workspace and tasks.
-  - **Administrator:** Elevated access to `/admin/tasks` (global system task oversight with owner details) and `/admin/users` (user directory with task activity and role modification modal).
+  - **Administrator:** Elevated access to `/admin/tasks` (global system task oversight with owner details) and `/admin/users` (user directory with task activity and role modification modal), alongside a personal workspace for managing their own assigned tasks.
 - [x] CSRF Protection: Cryptographically secure tokens (`$_SESSION['csrf_token']`) verified with `hash_equals()` on all state-changing POST requests.
 - [x] XSS Prevention: Strict output escaping using `htmlspecialchars($string, ENT_QUOTES, 'UTF-8')`.
 
 ### Optional Bonus Features
-- [x] Summary metric counter cards on the dashboard (*Total Tasks*, *In Progress*, *Completed*, *Pending*).
+- [x] Clickable summary metric counter cards (*Total Tasks*, *In Progress*, *Completed*, *Pending*).
 - [x] Priority levels (*High*, *Medium*, *Low*) with distinct color-coded badges.
 - [x] Calendar due dates.
 - [x] Server-side pagination with dynamic page calculations.
+- [x] Unified, consistent application footer: `TaskFlow - Task tracking application`.
 
 ---
 
 ## 4. Pre-configured Test Accounts
 
-The database comes pre-seeded with test accounts for immediate evaluation:
+The database comes pre-seeded with realistic, everyday test profiles adhering to the strong password security policy:
 
-| Role | Name | Email | Password | Access Scope |
+| Role | Name | Email | Password | Sample Tasks / Scope |
 |---|---|---|---|---|
-| **Administrator** | Administrator | `admin@rtih.org` | `Password@123` | Full administrative oversight (`/admin/tasks`, `/admin/users`) + personal dashboard. |
-| **Standard User** | Alex Morgan | `alex@rtih.org` | `Password@123` | Standard workspace; restricted strictly to own tasks. |
-| **Standard User** | Sarah Jenkins | `sarah@rtih.org` | `Password@123` | Demonstrates cross-user isolation. |
+| **Administrator** | Boddeda Prudhvi | `prudhviboddeda5@gmail.com` | `TaskFlow#2026Secure` | 4 personal tasks + Full administrative oversight (`/admin/tasks`, `/admin/users`). |
+| **Standard User** | Kalyan Varma | `kalyan.varma@gmail.com` | `TaskFlow#2026Secure` | 5 everyday tasks (groceries, electricity bill, doctor visit, car service, book renewal). |
+| **Standard User** | Ananya Rao | `ananya.rao@gmail.com` | `TaskFlow#2026Secure` | 3 everyday tasks (insurance policy, AC servicing, water filter maintenance). |
+| **Standard User** | Suresh Reddy | `suresh.reddy@gmail.com` | `TaskFlow#2026Secure` | 3 everyday tasks (Wi-Fi recharge, medicine restock, property tax payment). Demonstrates cross-user isolation. |
 
 *Quick-fill profile buttons are provided directly on the sign-in screen for one-click testing.*
 
@@ -137,8 +150,11 @@ Open your browser and navigate to:
 http://localhost/task-tracker/
 ```
 You will be directed to the authentication screen. Click one of the quick test buttons or log in with:
-- **Email:** `alex@rtih.org`
-- **Password:** `Password@123`
+- **Email:** `kalyan.varma@gmail.com`
+- **Password:** `TaskFlow#2026Secure`
+Or for Administrator oversight:
+- **Email:** `prudhviboddeda5@gmail.com`
+- **Password:** `TaskFlow#2026Secure`
 
 ---
 

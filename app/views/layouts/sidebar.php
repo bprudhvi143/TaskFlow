@@ -26,34 +26,28 @@ $userInitial = strtoupper(substr($userName, 0, 1));
 
         <!-- Main Navigation Links -->
         <nav class="flex flex-col gap-1.5">
-            <span class="px-3 text-[11px] font-semibold text-on-surface-variant/80 tracking-wider uppercase mb-1">Workspace</span>
+            <span class="px-3 text-[11px] font-semibold text-on-surface-variant/80 tracking-wider uppercase mb-1">My Workspace</span>
             
             <a href="<?= BASE_URL ?>/public/index.php?page=dashboard" 
-               class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all <?= in_array($currentPage, ['dashboard', '']) ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface' ?>">
+               class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all <?= in_array($currentPage, ['dashboard', 'my-tasks', '']) ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface' ?>">
                 <span class="material-symbols-outlined text-[20px]">grid_view</span>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="<?= BASE_URL ?>/public/index.php?page=dashboard" 
-               class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all <?= $currentPage === 'my-tasks' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface' ?>">
-                <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                <span>My Tasks</span>
+                <span>Dashboard & Tasks</span>
             </a>
 
             <?php if (is_admin()): ?>
             <div class="pt-4 mt-2 border-t border-outline-variant/30">
-                <span class="px-3 text-[11px] font-semibold text-primary tracking-wider uppercase mb-1 block">Administrator</span>
+                <span class="px-3 text-[11px] font-semibold text-primary tracking-wider uppercase mb-1 block">Administrator Console</span>
                 
                 <a href="<?= BASE_URL ?>/public/index.php?page=admin-tasks" 
                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all <?= $currentPage === 'admin-tasks' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface' ?>">
                     <span class="material-symbols-outlined text-[20px]">checklist</span>
-                    <span>All Tasks</span>
+                    <span>All System Tasks</span>
                 </a>
 
                 <a href="<?= BASE_URL ?>/public/index.php?page=admin-users" 
                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all <?= $currentPage === 'admin-users' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface' ?>">
                     <span class="material-symbols-outlined text-[20px]">group</span>
-                    <span>Users</span>
+                    <span>User Directory</span>
                 </a>
             </div>
             <?php endif; ?>

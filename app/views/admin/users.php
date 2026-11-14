@@ -168,7 +168,7 @@ $currentUser = auth_user();
     </div>
 
     <footer class="p-6 text-center text-xs text-on-surface-variant border-t border-outline-variant/20">
-        <span>RTIH Intern – IT Technical Assignment &bull; TaskFlow</span>
+        <span>TaskFlow – Task tracking application</span>
     </footer>
 </div>
 

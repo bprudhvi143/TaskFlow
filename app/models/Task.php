@@ -37,7 +37,8 @@ class Task {
             $params['search_desc'] = '%' . trim($search) . '%';
         }
 
-        $sql .= " ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+        // Completed tasks sink to the bottom, active tasks first
+        $sql .= " ORDER BY (status = 'Completed') ASC, created_at DESC LIMIT :limit OFFSET :offset";
 
         $stmt = db()->prepare($sql);
         foreach ($params as $k => $v) {
@@ -242,7 +243,8 @@ class Task {
             $sql .= " WHERE " . implode(' AND ', $conditions);
         }
 
-        $sql .= " ORDER BY t.created_at DESC LIMIT :limit OFFSET :offset";
+        // Completed tasks sink to the bottom, active tasks first
+        $sql .= " ORDER BY (t.status = 'Completed') ASC, t.created_at DESC LIMIT :limit OFFSET :offset";
 
         $stmt = db()->prepare($sql);
         foreach ($params as $k => $v) {

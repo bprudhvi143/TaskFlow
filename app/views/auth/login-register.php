@@ -63,7 +63,7 @@ $activeTab = $_GET['tab'] ?? 'signin';
                                 </span>
                                 <input type="email" id="signin-email" name="email" required
                                        class="w-full h-11 pl-11 pr-4 bg-surface-container-low text-on-surface rounded-lg text-sm border border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-colors placeholder:text-outline"
-                                       placeholder="you@example.com" value="alex@rtih.org">
+                                       placeholder="you@example.com" value="prudhviboddeda5@gmail.com">
                             </div>
                         </div>
 
@@ -73,7 +73,7 @@ $activeTab = $_GET['tab'] ?? 'signin';
                                 <label class="text-xs font-semibold text-on-surface uppercase tracking-wider" for="signin-password">
                                     Password
                                 </label>
-                                <span class="text-xs text-on-surface-variant hover:text-primary transition-colors cursor-pointer" onclick="alert('For this internship demonstration, test accounts are provided below.')">
+                                <span class="text-xs text-on-surface-variant hover:text-primary transition-colors cursor-pointer" onclick="alert('Quick test profiles with secure passwords are provided below.')">
                                     Need help?
                                 </span>
                             </div>
@@ -83,7 +83,7 @@ $activeTab = $_GET['tab'] ?? 'signin';
                                 </span>
                                 <input type="password" id="signin-password" name="password" required
                                        class="w-full h-11 pl-11 pr-11 bg-surface-container-low text-on-surface rounded-lg text-sm border border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-colors placeholder:text-outline"
-                                       placeholder="Enter password" value="Password@123">
+                                       placeholder="Enter password" value="TaskFlow#2026Secure">
                                 <button type="button" onclick="togglePasswordVisibility('signin-password', 'eye-icon-signin')" 
                                         class="absolute right-3.5 text-on-surface-variant hover:text-on-surface transition-colors p-0.5 rounded">
                                     <span class="material-symbols-outlined text-[20px]" id="eye-icon-signin">visibility</span>
@@ -95,13 +95,13 @@ $activeTab = $_GET['tab'] ?? 'signin';
                         <div class="pt-1 pb-1">
                             <span class="text-[11px] font-semibold text-on-surface-variant/80 uppercase tracking-wider block mb-1.5">Quick Test Profiles:</span>
                             <div class="flex flex-wrap gap-2">
-                                <button type="button" onclick="fillCredentials('alex@rtih.org', 'Password@123')"
-                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-on-surface font-medium transition-colors flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-secondary"></span> User: alex@rtih.org
+                                <button type="button" onclick="fillCredentials('prudhviboddeda5@gmail.com', 'TaskFlow#2026Secure')"
+                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-primary font-semibold transition-colors flex items-center gap-1.5 border border-primary/20">
+                                    <span class="w-2 h-2 rounded-full bg-primary"></span> Admin: Boddeda Prudhvi
                                 </button>
-                                <button type="button" onclick="fillCredentials('admin@rtih.org', 'Password@123')"
-                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-primary font-semibold transition-colors flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-primary"></span> Admin: admin@rtih.org
+                                <button type="button" onclick="fillCredentials('kalyan.varma@gmail.com', 'TaskFlow#2026Secure')"
+                                        class="px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-xs text-on-surface font-medium transition-colors flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-secondary"></span> User: Kalyan Varma
                                 </button>
                             </div>
                         </div>
@@ -135,13 +135,13 @@ $activeTab = $_GET['tab'] ?? 'signin';
                                 </span>
                                 <input type="text" id="signup-name" name="name" required
                                        class="w-full h-11 pl-11 pr-4 bg-surface-container-low text-on-surface rounded-lg text-sm border border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-colors placeholder:text-outline"
-                                       placeholder="Alex Morgan">
+                                       placeholder="Kalyan Varma" oninput="checkPasswordStrength()">
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-on-surface uppercase tracking-wider mb-2" for="signup-email">
-                                Work Email
+                                Email Address
                             </label>
                             <div class="relative flex items-center">
                                 <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none select-none">
@@ -149,29 +149,70 @@ $activeTab = $_GET['tab'] ?? 'signin';
                                 </span>
                                 <input type="email" id="signup-email" name="email" required
                                        class="w-full h-11 pl-11 pr-4 bg-surface-container-low text-on-surface rounded-lg text-sm border border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-colors placeholder:text-outline"
-                                       placeholder="alex@company.com">
+                                       placeholder="kalyan.varma@gmail.com" oninput="checkPasswordStrength()">
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-on-surface uppercase tracking-wider mb-2" for="signup-password">
-                                Create Password
+                                Create Strong Password
                             </label>
                             <div class="relative flex items-center">
                                 <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none select-none">
                                     lock
                                 </span>
                                 <input type="password" id="signup-password" name="password" required minlength="8"
+                                       oninput="checkPasswordStrength()"
                                        class="w-full h-11 pl-11 pr-11 bg-surface-container-low text-on-surface rounded-lg text-sm border border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-colors placeholder:text-outline"
-                                       placeholder="Minimum 8 characters">
+                                       placeholder="Enter at least 8 characters">
                                 <button type="button" onclick="togglePasswordVisibility('signup-password', 'eye-icon-signup')" 
                                         class="absolute right-3.5 text-on-surface-variant hover:text-on-surface transition-colors p-0.5 rounded">
                                     <span class="material-symbols-outlined text-[20px]" id="eye-icon-signup">visibility</span>
                                 </button>
                             </div>
+
+                            <!-- 5 Rules for a Strong Password Checklist (CISA & NIST guidelines) -->
+                            <div class="mt-3 p-3 rounded-lg bg-surface-container-low border border-outline-variant/30 text-xs">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="font-semibold text-[11px] text-on-surface uppercase tracking-wider">Password Requirements:</span>
+                                    <span id="strengthLabel" class="text-[11px] font-bold text-on-surface-variant">Too Weak</span>
+                                </div>
+                                
+                                <!-- Strength progress bar -->
+                                <div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mb-2.5">
+                                    <div id="strengthBar" class="h-full bg-error transition-all duration-300 w-1/12"></div>
+                                </div>
+
+                                <ul class="space-y-1 text-[11px]">
+                                    <li id="rule-length" class="flex items-center gap-1.5 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                        <span>At least 8 characters in length</span>
+                                    </li>
+                                    <li id="rule-upper" class="flex items-center gap-1.5 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                        <span>Contains uppercase letter (A-Z)</span>
+                                    </li>
+                                    <li id="rule-lower" class="flex items-center gap-1.5 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                        <span>Contains lowercase letter (a-z)</span>
+                                    </li>
+                                    <li id="rule-number" class="flex items-center gap-1.5 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                        <span>Contains at least one number (0-9)</span>
+                                    </li>
+                                    <li id="rule-symbol" class="flex items-center gap-1.5 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                        <span>Contains a special symbol (!@#$%^&*...)</span>
+                                    </li>
+                                    <li id="rule-personal" class="flex items-center gap-1.5 text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                        <span>Does not contain your name or email prefix</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
-                        <button type="submit" 
+                        <button type="submit" id="signupSubmitBtn"
                                 class="w-full py-3 px-4 mt-2 bg-primary hover:bg-primary/90 text-on-primary font-semibold rounded-lg shadow-sm transition-all duration-150 flex items-center justify-center gap-2">
                             <span>Get Started Free</span>
                             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -199,7 +240,7 @@ $activeTab = $_GET['tab'] ?? 'signin';
 
             <!-- Footer Meta -->
             <div class="mt-6 text-center text-xs text-on-surface-variant">
-                <span>RTIH Intern – IT Technical Assignment &bull; TaskFlow</span>
+                <span>TaskFlow - Task tracking application</span>
             </div>
 
         </div>
@@ -249,6 +290,77 @@ function togglePasswordVisibility(inputId, iconId) {
 function fillCredentials(email, password) {
     document.getElementById('signin-email').value = email;
     document.getElementById('signin-password').value = password;
+}
+
+function checkPasswordStrength() {
+    const password = document.getElementById('signup-password').value;
+    const name = document.getElementById('signup-name').value.toLowerCase().trim();
+    const email = document.getElementById('signup-email').value.toLowerCase().trim();
+    const emailPrefix = email.split('@')[0];
+
+    const hasLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password);
+
+    // Personal info check (name or email handle cannot be in password)
+    let hasPersonal = false;
+    const nameTokens = name.split(/\s+/).filter(t => t.length >= 3);
+    if (emailPrefix.length >= 3) nameTokens.push(emailPrefix);
+    for (const token of nameTokens) {
+        if (password.toLowerCase().includes(token)) {
+            hasPersonal = true;
+            break;
+        }
+    }
+    const safeFromPersonal = !hasPersonal;
+
+    // Update rule indicators
+    updateRuleItem('rule-length', hasLength);
+    updateRuleItem('rule-upper', hasUpper);
+    updateRuleItem('rule-lower', hasLower);
+    updateRuleItem('rule-number', hasNumber);
+    updateRuleItem('rule-symbol', hasSymbol);
+    updateRuleItem('rule-personal', safeFromPersonal && (name.length > 0 || email.length > 0));
+
+    // Calculate score
+    const score = [hasLength, hasUpper, hasLower, hasNumber, hasSymbol, safeFromPersonal].filter(Boolean).length;
+    const bar = document.getElementById('strengthBar');
+    const label = document.getElementById('strengthLabel');
+
+    if (score <= 2) {
+        bar.className = 'h-full bg-error transition-all duration-300 w-1/4';
+        label.textContent = 'Too Weak';
+        label.className = 'text-[11px] font-bold text-error';
+    } else if (score <= 4) {
+        bar.className = 'h-full bg-amber-500 transition-all duration-300 w-2/4';
+        label.textContent = 'Fair';
+        label.className = 'text-[11px] font-bold text-amber-600';
+    } else if (score === 5) {
+        bar.className = 'h-full bg-sky-500 transition-all duration-300 w-3/4';
+        label.textContent = 'Good';
+        label.className = 'text-[11px] font-bold text-sky-700';
+    } else {
+        bar.className = 'h-full bg-emerald-500 transition-all duration-300 w-full';
+        label.textContent = 'Strong (Recommended)';
+        label.className = 'text-[11px] font-bold text-emerald-700';
+    }
+}
+
+function updateRuleItem(id, isMet) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const icon = el.querySelector('.material-symbols-outlined');
+    if (isMet) {
+        el.className = 'flex items-center gap-1.5 text-emerald-700 font-medium';
+        icon.textContent = 'check_circle';
+        icon.className = 'material-symbols-outlined text-[14px] text-emerald-600';
+    } else {
+        el.className = 'flex items-center gap-1.5 text-on-surface-variant';
+        icon.textContent = 'radio_button_unchecked';
+        icon.className = 'material-symbols-outlined text-[14px] text-outline';
+    }
 }
 </script>
 

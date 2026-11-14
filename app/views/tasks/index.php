@@ -55,11 +55,13 @@ $user = auth_user();
                 </div>
             </div>
 
-            <!-- 4 Summary Metric Cards (Google Stitch Layout) -->
+            <!-- 4 Summary Metric Cards (Clickable Filter Cards) -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 
                 <!-- 1. Total Tasks -->
-                <div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] flex flex-col justify-between">
+                <a href="<?= BASE_URL ?>/public/index.php?page=dashboard" 
+                   class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:border-primary/60 hover:shadow-md transition-all cursor-pointer block <?= empty($status) ? 'ring-2 ring-primary/40' : '' ?>"
+                   title="View all tasks">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Total Tasks</span>
                         <div class="w-8 h-8 rounded-lg bg-surface-container text-on-surface flex items-center justify-center">
@@ -68,12 +70,14 @@ $user = auth_user();
                     </div>
                     <div class="mt-3">
                         <span class="font-heading text-2xl sm:text-3xl font-bold text-on-surface"><?= $metrics['total'] ?></span>
-                        <span class="text-[11px] text-on-surface-variant block mt-0.5">Assigned to you</span>
+                        <span class="text-[11px] text-on-surface-variant block mt-0.5">Assigned to you &bull; View all</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- 2. In Progress -->
-                <div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] flex flex-col justify-between">
+                <a href="<?= BASE_URL ?>/public/index.php?page=dashboard&status=In+Progress" 
+                   class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:border-sky-500 hover:shadow-md transition-all cursor-pointer block <?= $status === 'In Progress' ? 'ring-2 ring-sky-500 bg-sky-50/20' : '' ?>"
+                   title="Click to view In Progress tasks">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-sky-800 uppercase tracking-wider">In Progress</span>
                         <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-800 flex items-center justify-center">
@@ -82,12 +86,14 @@ $user = auth_user();
                     </div>
                     <div class="mt-3">
                         <span class="font-heading text-2xl sm:text-3xl font-bold text-sky-900"><?= $metrics['in_progress'] ?></span>
-                        <span class="text-[11px] text-sky-700 block mt-0.5">Active execution</span>
+                        <span class="text-[11px] text-sky-700 block mt-0.5">Active execution &bull; Click to filter</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- 3. Completed -->
-                <div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] flex flex-col justify-between">
+                <a href="<?= BASE_URL ?>/public/index.php?page=dashboard&status=Completed" 
+                   class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:border-emerald-500 hover:shadow-md transition-all cursor-pointer block <?= $status === 'Completed' ? 'ring-2 ring-emerald-500 bg-emerald-50/20' : '' ?>"
+                   title="Click to view Completed tasks">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-emerald-800 uppercase tracking-wider">Completed</span>
                         <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
@@ -96,12 +102,14 @@ $user = auth_user();
                     </div>
                     <div class="mt-3">
                         <span class="font-heading text-2xl sm:text-3xl font-bold text-emerald-900"><?= $metrics['completed'] ?></span>
-                        <span class="text-[11px] text-emerald-700 block mt-0.5">Successfully closed</span>
+                        <span class="text-[11px] text-emerald-700 block mt-0.5">Successfully closed &bull; Click to filter</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- 4. Pending -->
-                <div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] flex flex-col justify-between">
+                <a href="<?= BASE_URL ?>/public/index.php?page=dashboard&status=Pending" 
+                   class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:border-amber-500 hover:shadow-md transition-all cursor-pointer block <?= $status === 'Pending' ? 'ring-2 ring-amber-500 bg-amber-50/20' : '' ?>"
+                   title="Click to view Pending tasks">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-amber-800 uppercase tracking-wider">Pending</span>
                         <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center">
@@ -110,9 +118,9 @@ $user = auth_user();
                     </div>
                     <div class="mt-3">
                         <span class="font-heading text-2xl sm:text-3xl font-bold text-amber-900"><?= $metrics['pending'] ?></span>
-                        <span class="text-[11px] text-amber-700 block mt-0.5">Awaiting start</span>
+                        <span class="text-[11px] text-amber-700 block mt-0.5">Awaiting start &bull; Click to filter</span>
                     </div>
-                </div>
+                </a>
 
             </div>
 
@@ -204,17 +212,44 @@ $user = auth_user();
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-outline-variant/20 text-xs text-on-surface">
-                            <?php foreach ($tasks as $task): ?>
-                            <tr class="hover:bg-surface-container-low/50 transition-colors group">
+                            <?php foreach ($tasks as $task): 
+                                $isCompleted = ($task['status'] === 'Completed');
+                            ?>
+                            <tr class="transition-colors group <?= $isCompleted ? 'bg-emerald-50/30 border-l-4 border-l-emerald-500 hover:bg-emerald-50/50' : 'hover:bg-surface-container-low/50 border-l-4 border-l-transparent' ?>">
                                 
                                 <!-- Title & Description -->
                                 <td class="py-4 px-6 max-w-md">
                                     <div class="flex flex-col">
-                                        <span class="font-semibold text-on-surface text-sm leading-snug <?= $task['status'] === 'Completed' ? 'line-through text-on-surface-variant' : '' ?>">
-                                            <?= e($task['title']) ?>
-                                        </span>
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <span class="font-semibold text-on-surface text-sm leading-snug flex items-center gap-1.5">
+                                                <?php if ($isCompleted): ?>
+                                                <span class="material-symbols-outlined text-emerald-600 text-[18px]" title="Completed task">check_circle</span>
+                                                <?php endif; ?>
+                                                <?= e($task['title']) ?>
+                                            </span>
+
+                                            <!-- Interactive Quick Status Popup Trigger (Feature 1) -->
+                                            <?php if (!$isCompleted): ?>
+                                            <button type="button" 
+                                                    onclick="openStatusChangeModal(<?= $task['id'] ?>, '<?= e(addslashes($task['title'])) ?>', '<?= $task['status'] ?>')"
+                                                    class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300 shadow-sm transition-all cursor-pointer"
+                                                    title="Click to quickly update status without opening edit details">
+                                                <span class="material-symbols-outlined text-[13px]">done_all</span>
+                                                <span>Mark as Completed</span>
+                                            </button>
+                                            <?php else: ?>
+                                            <button type="button" 
+                                                    onclick="openStatusChangeModal(<?= $task['id'] ?>, '<?= e(addslashes($task['title'])) ?>', '<?= $task['status'] ?>')"
+                                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer"
+                                                    title="Change task status">
+                                                <span class="material-symbols-outlined text-[12px]">swap_horiz</span>
+                                                <span>Change status</span>
+                                            </button>
+                                            <?php endif; ?>
+                                        </div>
+
                                         <?php if (!empty($task['description'])): ?>
-                                        <span class="text-xs text-on-surface-variant mt-0.5 line-clamp-1">
+                                        <span class="text-xs text-on-surface-variant mt-1 line-clamp-1">
                                             <?= e($task['description']) ?>
                                         </span>
                                         <?php endif; ?>
@@ -241,24 +276,28 @@ $user = auth_user();
                                     <?php endif; ?>
                                 </td>
 
-                                <!-- Status Badge with Dot -->
+                                <!-- Status Badge with Dot (Clickable to change status) -->
                                 <td class="py-4 px-4 whitespace-nowrap">
-                                    <?php if ($task['status'] === 'Completed'): ?>
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#dcfce7] text-[#166534]">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>
-                                        Completed
-                                    </span>
-                                    <?php elseif ($task['status'] === 'In Progress'): ?>
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#e0f2fe] text-[#075985]">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#0284c7]"></span>
-                                        In Progress
-                                    </span>
-                                    <?php else: ?>
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#fef3c7] text-[#92400e]">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"></span>
-                                        Pending
-                                    </span>
-                                    <?php endif; ?>
+                                    <button type="button" 
+                                            onclick="openStatusChangeModal(<?= $task['id'] ?>, '<?= e(addslashes($task['title'])) ?>', '<?= $task['status'] ?>')"
+                                            class="cursor-pointer transition-transform hover:scale-105" title="Click to change status">
+                                        <?php if ($task['status'] === 'Completed'): ?>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#dcfce7] text-[#166534]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>
+                                            Completed
+                                        </span>
+                                        <?php elseif ($task['status'] === 'In Progress'): ?>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#e0f2fe] text-[#075985]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#0284c7]"></span>
+                                            In Progress
+                                        </span>
+                                        <?php else: ?>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#fef3c7] text-[#92400e]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"></span>
+                                            Pending
+                                        </span>
+                                        <?php endif; ?>
+                                    </button>
                                 </td>
 
                                 <!-- Due Date -->
@@ -278,7 +317,7 @@ $user = auth_user();
                                     <div class="inline-flex items-center gap-1">
                                         
                                         <!-- Quick Status Toggle Button -->
-                                        <?php if ($task['status'] !== 'Completed'): ?>
+                                        <?php if (!$isCompleted): ?>
                                         <form action="<?= BASE_URL ?>/public/actions/task-status.php" method="POST" class="m-0 inline">
                                             <?= csrf_field() ?>
                                             <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
@@ -368,7 +407,7 @@ $user = auth_user();
 
     <!-- Workspace Footer -->
     <footer class="p-6 text-center text-xs text-on-surface-variant border-t border-outline-variant/20">
-        <span>RTIH Intern – IT Technical Assignment &bull; TaskFlow</span>
+        <span>TaskFlow - Task tracking application</span>
     </footer>
 </div>
 
@@ -376,5 +415,6 @@ $user = auth_user();
 <?php 
 require_once __DIR__ . '/components/modal-task.php';
 require_once __DIR__ . '/components/modal-delete.php';
+require_once __DIR__ . '/components/modal-status.php';
 require_once __DIR__ . '/../layouts/footer.php'; 
 ?>

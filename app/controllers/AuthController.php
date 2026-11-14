@@ -98,10 +98,37 @@ class AuthController {
             $errors[] = 'An account with this email address already exists.';
         }
 
+        // 5 Rules for a Strong Password (NIST / CISA guidelines)
         if (empty($password)) {
             $errors[] = 'Password is required.';
-        } elseif (strlen($password) < 8) {
-            $errors[] = 'Password must be at least 8 characters long.';
+        } else {
+            if (strlen($password) < 8) {
+                $errors[] = 'Password must be at least 8 characters long.';
+            }
+            if (!preg_match('/[A-Z]/', $password)) {
+                $errors[] = 'Password must contain at least one uppercase letter (A-Z).';
+            }
+            if (!preg_match('/[a-z]/', $password)) {
+                $errors[] = 'Password must contain at least one lowercase letter (a-z).';
+            }
+            if (!preg_match('/[0-9]/', $password)) {
+                $errors[] = 'Password must contain at least one numeric digit (0-9).';
+            }
+            if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?~`]/', $password)) {
+                $errors[] = 'Password must contain at least one special symbol (!@#$%^&*...).';
+            }
+
+            // Rule: Avoid personal information (name or email prefix cannot be in password)
+            $nameParts = preg_split('/[\s,\.\-_]+/', strtolower($name));
+            $emailPrefix = strtolower(explode('@', $email)[0]);
+            $nameParts[] = $emailPrefix;
+
+            foreach ($nameParts as $part) {
+                if (strlen($part) >= 3 && stripos($password, $part) !== false) {
+                    $errors[] = 'Password cannot contain your name or email prefix.';
+                    break;
+                }
+            }
         }
 
         if (!empty($errors)) {
@@ -109,7 +136,7 @@ class AuthController {
             redirect(BASE_URL . '/public/index.php?page=login&tab=register');
         }
 
-        // Create new standard user
+        // Standard user creation: Accounts can ONLY be created as standard 'user'
         $userId = User::create($name, $email, $password, 'user');
 
         if ($userId > 0) {

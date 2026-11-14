@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') {
             closeTaskModal();
             closeDeleteModal();
+            closeStatusModal();
             if (typeof closeRoleModal === 'function') {
                 closeRoleModal();
             }
@@ -30,6 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
         deleteBackdrop.addEventListener('click', (e) => {
             if (e.target === deleteBackdrop) {
                 closeDeleteModal();
+            }
+        });
+    }
+
+    const statusBackdrop = document.getElementById('statusModalBackdrop');
+    if (statusBackdrop) {
+        statusBackdrop.addEventListener('click', (e) => {
+            if (e.target === statusBackdrop) {
+                closeStatusModal();
             }
         });
     }
@@ -161,4 +171,47 @@ function updateTitleCount(input) {
             counter.classList.add('text-on-surface-variant');
         }
     }
+}
+
+/**
+ * Open Quick Status Change Modal (Feature 1)
+ */
+function openStatusChangeModal(taskId, title, currentStatus) {
+    document.getElementById('status_task_id').value = taskId;
+    document.getElementById('statusTaskTitle').textContent = `"${title}"`;
+    document.getElementById('statusCurrentVal').textContent = currentStatus;
+
+    const backdrop = document.getElementById('statusModalBackdrop');
+    const card = document.getElementById('statusModalCard');
+
+    backdrop.classList.remove('hidden');
+    setTimeout(() => {
+        backdrop.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+        card.classList.add('scale-100');
+    }, 10);
+}
+
+/**
+ * Close Quick Status Change Modal
+ */
+function closeStatusModal() {
+    const backdrop = document.getElementById('statusModalBackdrop');
+    const card = document.getElementById('statusModalCard');
+    if (!backdrop || backdrop.classList.contains('hidden')) return;
+
+    backdrop.classList.add('opacity-0');
+    card.classList.remove('scale-100');
+    card.classList.add('scale-95');
+    setTimeout(() => {
+        backdrop.classList.add('hidden');
+    }, 200);
+}
+
+/**
+ * Submit Quick Status Change
+ */
+function submitQuickStatus(targetStatus) {
+    document.getElementById('status_target_val').value = targetStatus;
+    document.getElementById('quickStatusForm').submit();
 }
