@@ -1,4 +1,4 @@
-# RTIH TaskFlow – Web Application
+# TaskFlow – Web Application
 
 **Assignment:** Technical Assignment – Intern IT  
 **Organization:** Ratan Tata Innovation Hub (RTIH)  
