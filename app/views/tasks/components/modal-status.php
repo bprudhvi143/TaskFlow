@@ -14,9 +14,7 @@
         <!-- Header -->
         <div class="flex items-start justify-between pb-3 border-b border-outline-variant/30">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined text-[22px]">swap_horiz</span>
-                </div>
+                <img src="<?= BASE_URL ?>/public/assets/images/logo-icon.png" alt="TaskFlow" class="w-10 h-10 object-contain drop-shadow-sm">
                 <div>
                     <span class="text-[11px] text-secondary font-bold uppercase tracking-wider">Fast Action</span>
                     <h3 id="statusModalTitle" class="font-heading text-lg font-bold text-on-surface">Update Task Status</h3>

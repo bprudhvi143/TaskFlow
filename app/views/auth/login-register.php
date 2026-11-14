@@ -14,13 +14,11 @@ $activeTab = $_GET['tab'] ?? 'signin';
     <main class="w-full max-w-lg mx-auto">
         <div class="flex flex-col w-full items-center justify-center py-4 sm:py-6">
             
-            <!-- Brand Header -->
+            <!-- Brand Header with Official Logo -->
             <div class="flex flex-col items-center text-center mb-6">
                 <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-sm relative overflow-hidden">
-                        <span class="material-symbols-outlined text-secondary-container text-[24px]">task_alt</span>
-                    </div>
-                    <span class="font-heading font-bold text-2xl tracking-tight text-primary">TaskFlow</span>
+                    <img src="<?= BASE_URL ?>/public/assets/images/logo.png" alt="TaskFlow" class="w-12 h-12 object-contain drop-shadow-md">
+                    <span class="font-heading font-bold text-3xl tracking-tight text-primary">TaskFlow</span>
                 </div>
                 <p class="text-sm font-medium text-on-surface-variant">Plan your work. Track your progress.</p>
             </div>

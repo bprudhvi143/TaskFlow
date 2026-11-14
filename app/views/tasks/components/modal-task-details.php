@@ -18,19 +18,22 @@
 
         <!-- Header -->
         <div class="p-6 pb-4 border-b border-outline-variant/30 flex items-start justify-between">
-            <div class="flex-1 pr-3">
-                <div class="flex items-center gap-2 mb-1.5" id="taskDetailsHeaderMeta">
-                    <span id="taskDetailsStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-surface-container text-on-surface-variant">
-                        <span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
-                        <span id="taskDetailsStatusText">Pending</span>
-                    </span>
-                    <span id="taskDetailsPriorityBadge" class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-surface-container text-on-surface-variant">
-                        Medium
-                    </span>
+            <div class="flex items-start gap-3 flex-1 pr-3">
+                <img src="<?= BASE_URL ?>/public/assets/images/logo-icon.png" alt="TaskFlow" class="w-10 h-10 object-contain drop-shadow-sm shrink-0 mt-0.5">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1.5" id="taskDetailsHeaderMeta">
+                        <span id="taskDetailsStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-surface-container text-on-surface-variant">
+                            <span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                            <span id="taskDetailsStatusText">Pending</span>
+                        </span>
+                        <span id="taskDetailsPriorityBadge" class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-surface-container text-on-surface-variant">
+                            Medium
+                        </span>
+                    </div>
+                    <h2 id="taskDetailsTitle" class="font-heading text-xl sm:text-2xl font-bold text-on-surface tracking-tight leading-snug">
+                        Task Title
+                    </h2>
                 </div>
-                <h2 id="taskDetailsTitle" class="font-heading text-xl sm:text-2xl font-bold text-on-surface tracking-tight leading-snug">
-                    Task Title
-                </h2>
             </div>
             
             <button type="button" onclick="closeTaskDetailsModal()" title="Close details"

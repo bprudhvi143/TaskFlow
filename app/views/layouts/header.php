@@ -13,6 +13,10 @@ $currentUser = auth_user();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($pageTitle) ?></title>
 
+    <!-- Favicon & Brand Icons -->
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/public/assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="<?= BASE_URL ?>/public/assets/images/logo-icon.png">
+
     <!-- Google Fonts & Material Symbols -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -18,13 +18,16 @@
 
         <!-- Modal Header -->
         <div class="px-6 pt-5 pb-3 flex items-start justify-between bg-surface-container-lowest border-b border-outline-variant/30">
-            <div class="flex flex-col pr-4">
-                <div class="flex items-center gap-1.5 mb-1">
-                    <span class="w-2 h-2 rounded-full bg-primary" id="taskModalBadgeDot"></span>
-                    <span class="text-[11px] text-primary font-semibold uppercase tracking-wider" id="taskModalBadgeText">New Entry</span>
+            <div class="flex items-start gap-3">
+                <img src="<?= BASE_URL ?>/public/assets/images/logo-icon.png" alt="TaskFlow" class="w-10 h-10 object-contain drop-shadow-sm shrink-0 mt-0.5">
+                <div class="flex flex-col pr-4">
+                    <div class="flex items-center gap-1.5 mb-1">
+                        <span class="w-2 h-2 rounded-full bg-primary" id="taskModalBadgeDot"></span>
+                        <span class="text-[11px] text-primary font-semibold uppercase tracking-wider" id="taskModalBadgeText">New Entry</span>
+                    </div>
+                    <h2 id="taskModalTitle" class="font-heading text-xl font-bold text-on-surface tracking-tight">Create New Task</h2>
+                    <p id="taskModalSubtitle" class="text-xs text-on-surface-variant mt-0.5">Fill in the details below to add a new task to your workspace.</p>
                 </div>
-                <h2 id="taskModalTitle" class="font-heading text-xl font-bold text-on-surface tracking-tight">Create New Task</h2>
-                <p id="taskModalSubtitle" class="text-xs text-on-surface-variant mt-0.5">Fill in the details below to add a new task to your workspace.</p>
             </div>
             <!-- Close button -->
             <button type="button" onclick="closeTaskModal()" title="Close modal"

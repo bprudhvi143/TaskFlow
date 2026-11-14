@@ -13,14 +13,12 @@ $userInitial = strtoupper(substr($userName, 0, 1));
 <!-- Sidebar Navigation -->
 <aside class="fixed left-0 top-0 h-screen w-64 bg-surface-container-lowest border-r border-outline-variant/40 z-30 flex flex-col justify-between py-6 px-4 shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
     <div class="flex flex-col gap-6">
-        <!-- Logo Branding -->
+        <!-- Logo Branding with Official Logo -->
         <div class="flex items-center gap-3 px-2">
-            <div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-sm">
-                <span class="material-symbols-outlined text-[22px]">task_alt</span>
-            </div>
+            <img src="<?= BASE_URL ?>/public/assets/images/logo.png" alt="TaskFlow" class="w-10 h-10 object-contain drop-shadow-sm shrink-0">
             <div>
                 <span class="font-heading font-bold text-xl text-on-surface tracking-tight block leading-tight">TaskFlow</span>
-                <span class="text-[11px] font-medium text-on-surface-variant tracking-wider uppercase block">Plan. Track. Progress.</span>
+                <span class="text-[10px] font-semibold text-on-surface-variant tracking-wider uppercase block">Plan. Track. Progress.</span>
             </div>
         </div>
 
