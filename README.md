@@ -4,7 +4,6 @@
 **Organization:** Ratan Tata Innovation Hub (RTIH)  
 **Author:** Boddeda Prudhvi  
 **Repository:** [https://github.com/bprudhvi143/TaskFlow.git](https://github.com/bprudhvi143/TaskFlow.git)  
-**Google Stitch Design Project:** `16118606580985303916`  
 
 ---
 
