@@ -166,7 +166,7 @@ class Task {
                 due_date = :due_date
             WHERE id = :id AND user_id = :user_id
         ");
-        return $stmt->execute([
+        $stmt->execute([
             'id'          => $id,
             'user_id'     => $userId,
             'title'       => trim($title),
@@ -175,6 +175,7 @@ class Task {
             'priority'    => in_array($priority, ['Low', 'Medium', 'High']) ? $priority : 'Medium',
             'due_date'    => !empty($dueDate) ? $dueDate : null
         ]);
+        return $stmt->rowCount() > 0;
     }
 
     /**
@@ -185,11 +186,12 @@ class Task {
             return false;
         }
         $stmt = db()->prepare("UPDATE tasks SET status = :status WHERE id = :id AND user_id = :user_id");
-        return $stmt->execute([
+        $stmt->execute([
             'status'  => $status,
             'id'      => $id,
             'user_id' => $userId
         ]);
+        return $stmt->rowCount() > 0;
     }
 
     /**
