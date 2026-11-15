@@ -4,6 +4,7 @@
 **Organization:** Ratan Tata Innovation Hub (RTIH)  
 **Author:** Boddeda Prudhvi  
 **Repository:** [https://github.com/bprudhvi143/TaskFlow.git](https://github.com/bprudhvi143/TaskFlow.git)  
+**Live Application URL:** [https://task-flow.infinityfreeapp.com/](https://task-flow.infinityfreeapp.com/)  
 
 ---
 
@@ -90,7 +91,7 @@ The frontend design is a 1:1 realization of the finalized Google Stitch UI (`Tas
 
 ## 4. Pre-configured Test Accounts
 
-The database comes pre-seeded with realistic, everyday test profiles adhering to the strong password security policy with unique passwords per account:
+The database comes pre-seeded with realistic, everyday test profiles adhering to the strong password security policy with unique passwords per account. You can test directly on the live production deployment at **[https://task-flow.infinityfreeapp.com/](https://task-flow.infinityfreeapp.com/)**:
 
 | Role | Name | Email | Password | Sample Tasks / Scope |
 |---|---|---|---|---|
