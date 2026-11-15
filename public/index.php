@@ -17,6 +17,14 @@ switch ($page) {
         AuthController::showLoginRegister();
         break;
 
+    case 'forgot-password':
+        AuthController::showForgotPassword();
+        break;
+
+    case 'reset-password':
+        AuthController::showResetPassword();
+        break;
+
     case 'dashboard':
     case 'my-tasks':
         TaskController::index();

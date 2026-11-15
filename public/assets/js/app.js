@@ -463,3 +463,335 @@ function closeTaskDetailsModal() {
         backdrop.classList.add('hidden');
     }, 200);
 }
+
+/**
+ * -------------------------------------------------------------
+ * Real-time Instant Search System (Tasks & Users)
+ * Parallel matched dropdown display & live table row filtering
+ * -------------------------------------------------------------
+ */
+
+let liveSearchDebounceTimer = null;
+
+function handleLiveSearch(query, type = 'tasks', scope = 'personal') {
+    const trimmed = query.trim();
+    const dropdown = document.getElementById('liveSearchDropdown');
+    const clearBtn = document.getElementById('clearSearchBtn');
+
+    if (clearBtn) {
+        if (trimmed.length > 0) {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+    }
+
+    // 1. Instant local client-side filter of visible table rows
+    filterVisibleTableRows(trimmed, type);
+
+    // 2. Hide dropdown if empty query
+    if (trimmed.length === 0) {
+        if (dropdown) {
+            dropdown.classList.add('hidden');
+            dropdown.innerHTML = '';
+        }
+        return;
+    }
+
+    // 3. Show dropdown with loading state
+    if (dropdown) {
+        dropdown.classList.remove('hidden');
+        dropdown.innerHTML = `
+            <div class="p-3 text-xs text-on-surface-variant flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px] animate-spin text-primary">progress_activity</span>
+                <span>Searching matched ${type}...</span>
+            </div>
+        `;
+    }
+
+    // 4. Debounce network fetch
+    clearTimeout(liveSearchDebounceTimer);
+    liveSearchDebounceTimer = setTimeout(() => {
+        const baseUrl = window.BASE_URL || '';
+        const endpoint = `${baseUrl}/public/actions/live-search.php?type=${encodeURIComponent(type)}&q=${encodeURIComponent(trimmed)}&scope=${encodeURIComponent(scope)}`;
+
+        fetch(endpoint)
+            .then(res => {
+                if (!res.ok) throw new Error('Search failed');
+                return res.json();
+            })
+            .then(data => {
+                if (type === 'users') {
+                    renderUserSearchResults(data.results || [], trimmed, dropdown);
+                } else {
+                    renderTaskSearchResults(data.results || [], trimmed, dropdown);
+                }
+            })
+            .catch(err => {
+                console.error('Live search error:', err);
+                if (dropdown) {
+                    dropdown.innerHTML = `
+                        <div class="p-3 text-xs text-on-surface-variant">
+                            Could not load search suggestions. Press Enter to search table.
+                        </div>
+                    `;
+                }
+            });
+    }, 150);
+}
+
+/**
+ * Filter visible table rows in real-time as user types
+ */
+function filterVisibleTableRows(query, type) {
+    const q = query.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    if (!rows.length) return;
+
+    rows.forEach(row => {
+        if (!q) {
+            row.style.display = '';
+            return;
+        }
+        const text = row.textContent.toLowerCase();
+        if (text.includes(q)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+/**
+ * Render Matched Task Results Down in Dropdown
+ */
+function renderTaskSearchResults(tasks, query, dropdown) {
+    if (!dropdown) return;
+
+    if (!tasks || tasks.length === 0) {
+        dropdown.innerHTML = `
+            <div class="p-4 text-center">
+                <p class="text-xs font-semibold text-on-surface">No matching tasks found</p>
+                <p class="text-[11px] text-on-surface-variant mt-0.5">No tasks match "${escapeHtml(query)}". Try another keyword.</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = `
+        <div class="p-2.5 bg-surface-container/70 border-b border-outline-variant/30 flex items-center justify-between text-[11px]">
+            <span class="font-bold text-primary uppercase tracking-wider flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">checklist</span>
+                Matching Tasks (${tasks.length})
+            </span>
+            <span class="text-on-surface-variant text-[10px]">Click any task to inspect details</span>
+        </div>
+        <div class="divide-y divide-outline-variant/20 max-h-72 overflow-y-auto">
+    `;
+
+    tasks.forEach(task => {
+        const highlightedTitle = highlightSearchKeyword(task.title, query);
+        let statusClass = 'bg-amber-50 text-amber-800';
+        if (task.status === 'Completed') statusClass = 'bg-emerald-50 text-emerald-800';
+        else if (task.status === 'In Progress') statusClass = 'bg-sky-50 text-sky-800';
+
+        let priorityClass = 'text-amber-800';
+        if (task.priority === 'High') priorityClass = 'text-red-700 font-semibold';
+        else if (task.priority === 'Low') priorityClass = 'text-outline';
+
+        const safeTaskJson = JSON.stringify(task).replace(/"/g, '&quot;');
+
+        html += `
+            <div class="p-3 hover:bg-surface-container-low transition-colors cursor-pointer flex items-center justify-between gap-3 group"
+                 onclick="selectLiveTaskResult(${safeTaskJson})">
+                <div class="truncate flex-1">
+                    <p class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors truncate">
+                        ${highlightedTitle}
+                    </p>
+                    ${task.description ? `<p class="text-[11px] text-on-surface-variant truncate mt-0.5">${escapeHtml(task.description)}</p>` : ''}
+                    ${task.owner_name ? `<p class="text-[10px] text-primary/80 mt-0.5 font-medium">Assignee: ${escapeHtml(task.owner_name)}</p>` : ''}
+                </div>
+                <div class="flex items-center gap-2 shrink-0 text-right">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusClass}">
+                        ${task.status}
+                    </span>
+                    <span class="text-[10px] ${priorityClass}">
+                        ${task.priority}
+                    </span>
+                    ${task.due_date ? `
+                    <span class="text-[10px] text-on-surface-variant flex items-center gap-0.5">
+                        <span class="material-symbols-outlined text-[12px]">calendar_today</span>
+                        ${task.due_date}
+                    </span>` : ''}
+                </div>
+            </div>
+        `;
+    });
+
+    html += `
+        </div>
+        <div class="p-2 bg-surface-container-low text-center border-t border-outline-variant/30">
+            <span class="text-[10px] text-on-surface-variant">Press Enter or click Filter to apply search to main table</span>
+        </div>
+    `;
+
+    dropdown.innerHTML = html;
+}
+
+/**
+ * Render Matched User Results Down in Dropdown
+ */
+function renderUserSearchResults(users, query, dropdown) {
+    if (!dropdown) return;
+
+    if (!users || users.length === 0) {
+        dropdown.innerHTML = `
+            <div class="p-4 text-center">
+                <p class="text-xs font-semibold text-on-surface">No matching users found</p>
+                <p class="text-[11px] text-on-surface-variant mt-0.5">No user found matching "${escapeHtml(query)}".</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = `
+        <div class="p-2.5 bg-surface-container/70 border-b border-outline-variant/30 flex items-center justify-between text-[11px]">
+            <span class="font-bold text-primary uppercase tracking-wider flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">group</span>
+                Matching Users (${users.length})
+            </span>
+            <span class="text-on-surface-variant text-[10px]">Click user to inspect workload</span>
+        </div>
+        <div class="divide-y divide-outline-variant/20 max-h-72 overflow-y-auto">
+    `;
+
+    users.forEach(user => {
+        const highlightedName = highlightSearchKeyword(user.name, query);
+        const highlightedEmail = highlightSearchKeyword(user.email, query);
+        const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+
+        let roleBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-surface-container text-on-surface-variant">User</span>`;
+        if (user.email && user.email.toLowerCase() === 'prudhviboddeda5@gmail.com') {
+            roleBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-emerald-800 to-teal-900 text-white">Master Admin</span>`;
+        } else if (user.role === 'admin') {
+            roleBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary text-on-primary">Admin</span>`;
+        }
+
+        const safeUserJson = JSON.stringify(user).replace(/"/g, '&quot;');
+
+        html += `
+            <div class="p-3 hover:bg-surface-container-low transition-colors cursor-pointer flex items-center justify-between gap-3 group"
+                 onclick="selectLiveUserResult(${safeUserJson})">
+                <div class="flex items-center gap-2.5 truncate flex-1">
+                    <div class="w-7 h-7 rounded-lg bg-surface-container text-primary font-bold text-xs flex items-center justify-center shrink-0">
+                        ${initial}
+                    </div>
+                    <div class="truncate">
+                        <p class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors truncate">
+                            ${highlightedName}
+                        </p>
+                        <p class="text-[11px] text-on-surface-variant truncate">${highlightedEmail}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-[10px] font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">
+                        ${user.total_tasks || 0} tasks
+                    </span>
+                    ${roleBadge}
+                </div>
+            </div>
+        `;
+    });
+
+    html += `
+        </div>
+        <div class="p-2 bg-surface-container-low text-center border-t border-outline-variant/30">
+            <span class="text-[10px] text-on-surface-variant">Click any user above to open their task inspection modal</span>
+        </div>
+    `;
+
+    dropdown.innerHTML = html;
+}
+
+/**
+ * Handle selecting task from live search
+ */
+function selectLiveTaskResult(task) {
+    const input = document.getElementById('searchInput');
+    if (input) input.value = task.title;
+    const dropdown = document.getElementById('liveSearchDropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+
+    if (typeof openTaskDetailsModal === 'function') {
+        openTaskDetailsModal(task);
+    }
+}
+
+/**
+ * Handle selecting user from live search
+ */
+function selectLiveUserResult(user) {
+    const input = document.getElementById('searchInput');
+    if (input) input.value = user.name;
+    const dropdown = document.getElementById('liveSearchDropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+
+    if (typeof openUserTasksModal === 'function') {
+        openUserTasksModal(user);
+    }
+}
+
+/**
+ * Clear Live Search
+ */
+function clearLiveSearch(type = 'tasks') {
+    const input = document.getElementById('searchInput');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+    const clearBtn = document.getElementById('clearSearchBtn');
+    if (clearBtn) clearBtn.classList.add('hidden');
+
+    const dropdown = document.getElementById('liveSearchDropdown');
+    if (dropdown) {
+        dropdown.classList.add('hidden');
+        dropdown.innerHTML = '';
+    }
+
+    filterVisibleTableRows('', type);
+}
+
+/**
+ * Highlight matching substring in text
+ */
+function highlightSearchKeyword(text, keyword) {
+    if (!text || !keyword) return escapeHtml(text || '');
+    const escapedText = escapeHtml(text);
+    const escapedKw = escapeRegex(keyword);
+    const regex = new RegExp(`(${escapedKw})`, 'gi');
+    return escapedText.replace(regex, '<mark class="bg-amber-200 text-on-surface rounded px-0.5 font-bold">$1</mark>');
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Global click listener to close search dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const container = document.getElementById('searchContainer');
+    const dropdown = document.getElementById('liveSearchDropdown');
+    if (container && dropdown && !container.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});

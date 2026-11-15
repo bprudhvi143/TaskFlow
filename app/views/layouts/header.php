@@ -92,6 +92,7 @@ $currentUser = auth_user();
           }
         }
     };
+    window.BASE_URL = "<?= BASE_URL ?>";
     </script>
     <style>
       .material-symbols-outlined {

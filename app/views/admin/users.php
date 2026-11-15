@@ -68,11 +68,24 @@ $isMasterAdmin = is_master_admin($currentUser);
                 <form action="<?= BASE_URL ?>/public/index.php" method="GET" class="w-full flex-1 flex flex-col sm:flex-row items-center gap-3">
                     <input type="hidden" name="page" value="admin-users">
 
-                    <div class="relative flex-1 w-full">
+                    <!-- Search Input with Live Dropdown -->
+                    <div class="relative flex-1 w-full" id="searchContainer">
                         <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px]">search</span>
-                        <input type="text" name="search" value="<?= e($search) ?>"
-                               class="w-full h-10 pl-9 pr-4 bg-surface-container-low text-on-surface text-xs rounded-lg border border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-all placeholder:text-outline"
+                        <input type="text" id="searchInput" name="search" value="<?= e($search) ?>"
+                               autocomplete="off"
+                               oninput="handleLiveSearch(this.value, 'users')"
+                               onfocus="if (this.value.trim().length >= 1) handleLiveSearch(this.value, 'users')"
+                               class="w-full h-10 pl-9 pr-8 bg-surface-container-low text-on-surface text-xs rounded-lg border border-transparent focus:border-primary focus:bg-surface-container-lowest outline-none transition-all placeholder:text-outline"
                                placeholder="Search users by name or email address...">
+                        <button type="button" id="clearSearchBtn" onclick="clearLiveSearch('users')" 
+                                class="absolute right-2.5 top-2.5 text-outline hover:text-on-surface <?= empty($search) ? 'hidden' : '' ?>" title="Clear search">
+                            <span class="material-symbols-outlined text-[16px]">cancel</span>
+                        </button>
+
+                        <!-- Live Parallel Matching Results Dropdown -->
+                        <div id="liveSearchDropdown" 
+                             class="absolute left-0 right-0 top-full mt-1.5 bg-surface-container-lowest rounded-xl shadow-2xl border border-outline-variant/40 z-40 overflow-hidden hidden transition-all duration-150">
+                        </div>
                     </div>
 
                     <div class="relative w-full sm:w-48">

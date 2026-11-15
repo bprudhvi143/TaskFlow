@@ -20,6 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'logout':
             AuthController::logout();
             break;
+        case 'forgot-password':
+            AuthController::sendResetLink();
+            break;
+        case 'reset-password':
+            AuthController::processResetPassword();
+            break;
         default:
             redirect(BASE_URL . '/public/index.php?page=login');
             break;

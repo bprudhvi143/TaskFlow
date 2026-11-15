@@ -90,6 +90,24 @@ class User {
     }
 
     /**
+     * Update user password securely with bcrypt
+     */
+    public static function updatePassword(int $id, string $newPassword): bool {
+        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $stmt = db()->prepare("UPDATE users SET password = :password WHERE id = :id");
+        return $stmt->execute(['password' => $hash, 'id' => $id]);
+    }
+
+    /**
+     * Update user password by email
+     */
+    public static function updatePasswordByEmail(string $email, string $newPassword): bool {
+        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $stmt = db()->prepare("UPDATE users SET password = :password WHERE email = :email");
+        return $stmt->execute(['password' => $hash, 'email' => strtolower(trim($email))]);
+    }
+
+    /**
      * Total user count
      */
     public static function countAll(): int {
