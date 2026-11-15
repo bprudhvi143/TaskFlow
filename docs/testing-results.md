@@ -14,8 +14,8 @@
 | **Suite B** | Level 2 – Status, Search & Validation | 8 | 8 | 0 | **PASSED** |
 | **Suite C** | Level 3 – Authentication, Security & RBAC | 11 | 11 | 0 | **PASSED** |
 | **Suite D** | Security & Tampering Resistance | 5 | 5 | 0 | **PASSED** |
-| **Suite E** | Date Restrictions & Advanced UI Controls | 4 | 4 | 0 | **PASSED** |
-| **Total** | | **34** | **34** | **0** | **100% Pass** |
+| **Suite E** | Date Restrictions & Advanced UI Controls | 3 | 3 | 0 | **PASSED** |
+| **Total** | | **33** | **33** | **0** | **100% Pass** |
 
 ---
 
@@ -86,7 +86,6 @@
 | **T-30** | Task Deadline Restriction to Today or Future Date | Attempt to submit task with a past due date (`2026-11-13`). | Client-side picker restricts past dates with `min="YYYY-MM-DD"`. If bypassed via direct HTTP POST, server-side validation rejects with error message: *"Task deadline must be today or a future date. Past dates cannot be set as a deadline."* | Server rejected past date with friendly flash message; valid tasks with today or future deadlines created successfully. | PASS |
 | **T-31** | Action Column UI Cleanup | Inspect task rows on User Dashboard and Admin System Tasks. | Action column contains only the essential Edit (pencil) and Delete (trash) icons. Redundant static checkmark beside delete is removed; status changes handled cleanly via the status chip. | Redundant checkmark icon completely removed from Action column. | PASS |
 | **T-33** | Live Search with Parallely Displayed Dropdown | Type keyword in search bar on Dashboard, Admin Tasks, or Admin Users. | Real-time dropdown appears directly underneath displaying matched records with keyword highlighting, status/role badges, priorities, and deadlines, while visible table rows filter in parallel. | Instant matched results rendered down in sleek dropdown and table filtered in real-time. | PASS |
-| **T-34** | Self-Contained Password Reset Flow | Click "Forgot password?", enter email, generate secure token, open reset link, submit new 5-rule strong password. | Cryptographically strong 64-char token generated and hashed with SHA-256 in `password_resets` table (30-min expiry); invalid/expired tokens rejected; valid submissions update bcrypt hash and invalidate token. | Complete reset journey succeeded without external dependencies; seed passwords restored. | PASS |
 
 ---
 

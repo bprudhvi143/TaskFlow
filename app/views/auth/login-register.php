@@ -71,11 +71,9 @@ $activeTab = $_GET['tab'] ?? 'signin';
                                 <label class="text-xs font-semibold text-on-surface uppercase tracking-wider" for="signin-password">
                                     Password
                                 </label>
-                                <a href="<?= BASE_URL ?>/public/index.php?page=forgot-password" 
-                                   class="text-xs text-primary font-semibold hover:underline transition-colors flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[14px]">lock_reset</span>
-                                    <span>Forgot password?</span>
-                                </a>
+                                <span class="text-xs text-on-surface-variant hover:text-primary transition-colors cursor-pointer" onclick="alert('Quick test profiles with secure passwords are provided below.')">
+                                    Need help?
+                                </span>
                             </div>
                             <div class="relative flex items-center">
                                 <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none select-none">

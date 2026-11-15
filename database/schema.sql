@@ -35,14 +35,3 @@ CREATE TABLE IF NOT EXISTS `tasks` (
     INDEX `idx_task_title` (`title`),
     INDEX `idx_task_user_status` (`user_id`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- 3. Password Resets Table
-CREATE TABLE IF NOT EXISTS `password_resets` (
-    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `email` VARCHAR(191) NOT NULL,
-    `token_hash` VARCHAR(64) NOT NULL,
-    `expires_at` DATETIME NOT NULL,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX `idx_reset_email` (`email`),
-    INDEX `idx_reset_token` (`token_hash`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
