@@ -1,0 +1,95 @@
+-- RTIH TaskFlow Web Application - Shared Hosting / phpMyAdmin Import
+-- Server version: MySQL 8.0+ / MariaDB 10.4+
+-- Safe for Shared Hosting (InfinityFree, cPanel, Hostinger)
+-- Note: Does NOT contain CREATE DATABASE or USE statements.
+-- Import this directly into your assigned database in phpMyAdmin.
+
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `tasks`;
+DROP TABLE IF EXISTS `users`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- --------------------------------------------------------
+-- Table structure for table `users`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `users` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(191) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
+    `role` ENUM('admin', 'user') NOT NULL DEFAULT 'user',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX `idx_user_email` (`email`),
+    INDEX `idx_user_role` (`role`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Table structure for table `tasks`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tasks` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `title` VARCHAR(150) NOT NULL,
+    `description` TEXT NULL,
+    `status` ENUM('Pending', 'In Progress', 'Completed') NOT NULL DEFAULT 'Pending',
+    `priority` ENUM('Low', 'Medium', 'High') NOT NULL DEFAULT 'Medium',
+    `due_date` DATE NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_tasks_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX `idx_task_user_id` (`user_id`),
+    INDEX `idx_task_status` (`status`),
+    INDEX `idx_task_priority` (`priority`),
+    INDEX `idx_task_title` (`title`),
+    INDEX `idx_task_user_status` (`user_id`, `status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- 1. Seed Users (Indian / Telugu Names, Popular Email Providers)
+-- Distinct strong passwords set as per rules (Length >= 8, Uppercase, Lowercase, Number, Symbol, No Name):
+-- Boddeda Prudhvi (admin): FalconShield#2026!Master -> $2y$10$4t4PyhsrwHxtv4QwTJj.5.4cLyAVoiONBKYfjbjJgMxAn8hoMoRv6
+-- Kalyan Varma    (user):  SapphireWave@2026#Track  -> $2y$10$G5Oozr1EFqpnLza3W3Hmuu18pFunu573gO1c53LL5fnMw3u8SWMGG
+-- Ananya Rao      (user):  EmeraldPeak#2026$Nova   -> $2y$10$OZQiG4vijYz9hD.eiXV8o.jYBND5CGEq7.rP/vxkZE/ZC/jzJ8hgm
+-- Suresh Reddy    (user):  GoldenHorizon@2026!Hub  -> $2y$10$ibVlI3c7gHmb1Nn7cndwdOoONizGfFuCrmS3O1Wsu98SaXFZPm4HW
+-- --------------------------------------------------------
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
+(1, 'Boddeda Prudhvi', 'prudhviboddeda5@gmail.com', '$2y$10$4t4PyhsrwHxtv4QwTJj.5.4cLyAVoiONBKYfjbjJgMxAn8hoMoRv6', 'admin', NOW()),
+(2, 'Kalyan Varma', 'kalyan.varma@gmail.com', '$2y$10$G5Oozr1EFqpnLza3W3Hmuu18pFunu573gO1c53LL5fnMw3u8SWMGG', 'user', NOW()),
+(3, 'Ananya Rao', 'ananya.rao@gmail.com', '$2y$10$OZQiG4vijYz9hD.eiXV8o.jYBND5CGEq7.rP/vxkZE/ZC/jzJ8hgm', 'user', NOW()),
+(4, 'Suresh Reddy', 'suresh.reddy@gmail.com', '$2y$10$ibVlI3c7gHmb1Nn7cndwdOoONizGfFuCrmS3O1Wsu98SaXFZPm4HW', 'user', NOW());
+
+-- --------------------------------------------------------
+-- 2. Tasks for Administrator Boddeda Prudhvi (user_id = 1)
+-- --------------------------------------------------------
+INSERT INTO `tasks` (`id`, `user_id`, `title`, `description`, `status`, `priority`, `due_date`, `created_at`) VALUES
+(1, 1, 'Review monthly household electricity and internet bills', 'Check billing statements for utility usage and process online payment before due date.', 'In Progress', 'High', DATE_ADD(CURRENT_DATE(), INTERVAL 2 DAY), NOW()),
+(2, 1, 'Schedule routine vehicle servicing and oil change', 'Book an appointment with authorized service center for general maintenance and wheel alignment.', 'Pending', 'Medium', DATE_ADD(CURRENT_DATE(), INTERVAL 5 DAY), NOW()),
+(3, 1, 'Renew two-wheeler and comprehensive car insurance', 'Compare policy quotes online, download renewal documents, and update insurance binder.', 'Completed', 'High', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), NOW()),
+(4, 1, 'Organize digital photo album and cloud backups', 'Transfer family vacation photos from phone to external hard drive and verify cloud sync.', 'Pending', 'Low', DATE_ADD(CURRENT_DATE(), INTERVAL 10 DAY), NOW());
+
+-- --------------------------------------------------------
+-- 3. Tasks for Kalyan Varma (user_id = 2)
+-- --------------------------------------------------------
+INSERT INTO `tasks` (`id`, `user_id`, `title`, `description`, `status`, `priority`, `due_date`, `created_at`) VALUES
+(5, 2, 'Buy weekly groceries and organic vegetables', 'Purchase fresh produce, pulses, cooking essentials, and milk supplies from local supermarket.', 'In Progress', 'High', DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY), NOW()),
+(6, 2, 'Plan family weekend dinner reservation', 'Call restaurant to reserve a table for six guests on Saturday evening.', 'Completed', 'Medium', DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY), NOW()),
+(7, 2, 'Schedule annual dental checkup appointment', 'Visit clinic for routine dental cleaning and consultation.', 'Pending', 'Medium', DATE_ADD(CURRENT_DATE(), INTERVAL 4 DAY), NOW()),
+(8, 2, 'Water indoor balcony plants and trim herbs', 'Ensure soil moisture for potted plants and add organic compost.', 'Completed', 'Low', DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY), NOW()),
+(9, 2, 'Clean and organize workspace desk and cables', 'Sort study materials, clean monitor screen, and manage loose cables with velcro ties.', 'Pending', 'Low', DATE_ADD(CURRENT_DATE(), INTERVAL 3 DAY), NOW());
+
+-- --------------------------------------------------------
+-- 4. Tasks for Ananya Rao (user_id = 3)
+-- --------------------------------------------------------
+INSERT INTO `tasks` (`id`, `user_id`, `title`, `description`, `status`, `priority`, `due_date`, `created_at`) VALUES
+(10, 3, 'Prepare monthly budget and track savings', 'Log all utility expenses, grocery receipts, and allocate 20% to emergency savings.', 'In Progress', 'High', DATE_ADD(CURRENT_DATE(), INTERVAL 3 DAY), NOW()),
+(11, 3, 'Return borrowed books to city central library', 'Check due dates on literature novels and renew library membership card.', 'Completed', 'Low', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY), NOW()),
+(12, 3, 'Order prescription medicines and vitamins refill', 'Order monthly medicine supplies through online pharmacy application.', 'Pending', 'High', DATE_ADD(CURRENT_DATE(), INTERVAL 2 DAY), NOW());
+
+-- --------------------------------------------------------
+-- 5. Tasks for Suresh Reddy (user_id = 4)
+-- --------------------------------------------------------
+INSERT INTO `tasks` (`id`, `user_id`, `title`, `description`, `status`, `priority`, `due_date`, `created_at`) VALUES
+(13, 4, 'Fix leaking bathroom faucet and check pipes', 'Replace worn rubber washer on kitchen sink and inspect plumbing connections.', 'In Progress', 'Medium', DATE_ADD(CURRENT_DATE(), INTERVAL 2 DAY), NOW()),
+(14, 4, 'Book train tickets for festival family trip', 'Check seat availability for festival holidays and book return tickets.', 'Pending', 'High', DATE_ADD(CURRENT_DATE(), INTERVAL 6 DAY), NOW()),
+(15, 4, 'Submit quarterly society maintenance payment', 'Transfer flat maintenance fee via UPI and save payment receipt copy.', 'Completed', 'Medium', DATE_SUB(CURRENT_DATE(), INTERVAL 4 DAY), NOW());
