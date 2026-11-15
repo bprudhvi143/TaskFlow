@@ -36,11 +36,23 @@ if (!defined('APP_NAME')) {
     define('APP_NAME', getenv('APP_NAME') ?: 'TaskFlow');
 }
 if (!defined('BASE_URL')) {
-    // Dynamically calculate BASE_URL based on script name if not explicitly set
-    $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
-    // If in public/ or actions/, point to web root of task-tracker
-    $cleanPath = rtrim(str_replace(['/public', '/actions'], '', $scriptDir), '/');
-    define('BASE_URL', getenv('APP_URL') ?: (isset($_SERVER['HTTP_HOST']) ? 'http://' . $_SERVER['HTTP_HOST'] . $cleanPath : '/task-tracker'));
+    $envUrl = getenv('APP_URL');
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+               (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ||
+               (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+
+    if (!empty($envUrl)) {
+        if ($isHttps && str_starts_with($envUrl, 'http://')) {
+            $envUrl = 'https://' . substr($envUrl, 7);
+        }
+        define('BASE_URL', rtrim($envUrl, '/'));
+    } else {
+        $protocol = $isHttps ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+        $cleanPath = rtrim(str_replace(['/public', '/actions'], '', $scriptDir), '/\\');
+        define('BASE_URL', $protocol . $host . $cleanPath);
+    }
 }
 
 // 3. Secure Session Initialization
