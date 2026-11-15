@@ -51,12 +51,12 @@ $isMasterAdmin = is_master_admin($currentUser);
                         <?php if ($isMasterAdmin): ?>
                         <span class="inline-flex items-center gap-1 font-semibold text-primary ml-1">
                             <span class="material-symbols-outlined text-[14px]">verified_user</span>
-                            Master Admin Mode (You can promote users to admin or demote admins to user)
+                            Master Admin Authority (Permanent protected account)
                         </span>
                         <?php else: ?>
-                        <span class="inline-flex items-center gap-1 text-on-surface-variant font-medium ml-1">
-                            <span class="material-symbols-outlined text-[14px]">lock</span>
-                            Role changes restricted exclusively to Master Admin (Boddeda Prudhvi)
+                        <span class="inline-flex items-center gap-1 text-primary font-medium ml-1">
+                            <span class="material-symbols-outlined text-[14px]">shield_person</span>
+                            Administrator Mode (Promote standard users or manage admin access; Master Admin role is protected)
                         </span>
                         <?php endif; ?>
                     </p>
@@ -201,26 +201,24 @@ $isMasterAdmin = is_master_admin($currentUser);
                                             <span>Tasks</span>
                                         </button>
 
-                                        <?php if ($isMasterAdmin): ?>
-                                            <?php if (is_master_admin($u)): ?>
-                                            <span class="px-2.5 py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant/50 text-xs font-medium inline-flex items-center gap-1 cursor-default" title="Master Administrator account is permanent and cannot be modified">
-                                                <span class="material-symbols-outlined text-[15px]">lock</span>
-                                                <span>Protected</span>
-                                            </span>
-                                            <?php else: ?>
-                                            <button type="button" 
-                                                    onclick='openRoleModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
-                                                    class="px-2.5 py-1.5 rounded-lg border border-primary/30 bg-primary/5 hover:bg-primary text-primary hover:text-on-primary text-xs font-semibold inline-flex items-center gap-1 transition-all shadow-xs"
-                                                    title="<?= $u['role'] === 'admin' ? 'Change Admin to User' : 'Change User to Admin' ?>">
-                                                <span class="material-symbols-outlined text-[16px]">manage_accounts</span>
-                                                <span>Change Role</span>
-                                            </button>
-                                            <?php endif; ?>
+                                        <?php if (is_master_admin($u)): ?>
+                                        <span class="px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-semibold inline-flex items-center gap-1 cursor-default shadow-xs" title="Master Administrator (Boddeda Prudhvi) account is permanent and cannot be modified">
+                                            <span class="material-symbols-outlined text-[15px] text-emerald-700">lock</span>
+                                            <span>Master Protected</span>
+                                        </span>
+                                        <?php elseif ((int)$u['id'] === (int)$currentUser['id']): ?>
+                                        <span class="px-2.5 py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant/70 text-xs font-medium inline-flex items-center gap-1 cursor-default" title="You cannot demote your own administrator account">
+                                            <span class="material-symbols-outlined text-[15px]">verified_user</span>
+                                            <span>Your Account</span>
+                                        </span>
                                         <?php else: ?>
-                                            <span class="px-2 py-1 rounded text-[11px] text-on-surface-variant/60 font-medium inline-flex items-center gap-1" title="Only Master Admin (Boddeda Prudhvi) can change user roles">
-                                                <span class="material-symbols-outlined text-[14px]">lock</span>
-                                                <span>Master Only</span>
-                                            </span>
+                                        <button type="button" 
+                                                onclick='openRoleModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
+                                                class="px-2.5 py-1.5 rounded-lg border border-primary/30 bg-primary/5 hover:bg-primary text-primary hover:text-on-primary text-xs font-semibold inline-flex items-center gap-1 transition-all shadow-xs"
+                                                title="<?= $u['role'] === 'admin' ? 'Change Admin to User' : 'Change User to Admin' ?>">
+                                            <span class="material-symbols-outlined text-[16px]">manage_accounts</span>
+                                            <span>Change Role</span>
+                                        </button>
                                         <?php endif; ?>
                                     </div>
                                 </td>
@@ -239,8 +237,7 @@ $isMasterAdmin = is_master_admin($currentUser);
     </footer>
 </div>
 
-<?php if ($isMasterAdmin): ?>
-<!-- Change User Role Modal (Exclusive Master Administrator Control) -->
+<!-- Change User Role Modal (Administrator Control) -->
 <div id="roleModalBackdrop" 
      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/40 backdrop-blur-sm transition-all duration-200 hidden opacity-0"
      role="dialog" aria-modal="true">
@@ -249,13 +246,13 @@ $isMasterAdmin = is_master_admin($currentUser);
         
         <div class="flex items-start justify-between pb-3 border-b border-outline-variant/30">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-emerald-800 to-teal-900 text-white flex items-center justify-center shadow-xs">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary flex items-center justify-center shadow-xs">
                     <span class="material-symbols-outlined text-[22px]">manage_accounts</span>
                 </div>
                 <div>
-                    <span class="text-[11px] text-emerald-800 uppercase font-bold tracking-wider flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[13px]">shield_with_heart</span>
-                        Master Admin Authorization
+                    <span class="text-[11px] text-primary uppercase font-bold tracking-wider flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[13px]">shield_person</span>
+                        Administrator Access Control
                     </span>
                     <h3 class="font-heading text-lg font-bold text-on-surface">Change User Role</h3>
                 </div>
@@ -270,7 +267,7 @@ $isMasterAdmin = is_master_admin($currentUser);
             <input type="hidden" name="user_id" id="role_user_id" value="">
 
             <p class="text-xs text-on-surface-variant leading-relaxed">
-                As Master Administrator, you have exclusive privilege to change a user to administrator or demote an administrator to standard user.
+                Administrators can promote standard users to administrator or demote administrators to standard user. The Master Administrator account (<strong class="text-on-surface">Boddeda Prudhvi</strong>) is permanently protected.
             </p>
 
             <!-- Target User Banner -->
@@ -312,7 +309,6 @@ $isMasterAdmin = is_master_admin($currentUser);
 
     </div>
 </div>
-<?php endif; ?>
 
 <!-- User Tasks Inspection Modal -->
 <div id="userTasksModalBackdrop" 

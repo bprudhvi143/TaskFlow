@@ -58,8 +58,9 @@ class AdminController {
     }
 
     /**
-     * Update User Role (Exclusive Master Administrator Privilege)
-     * Boddeda Prudhvi can change user <-> admin; other admins cannot.
+     * Update User Role (Administrator Action)
+     * All administrators can promote standard users to admin or demote admins to user.
+     * The Master Administrator (Boddeda Prudhvi) role is permanent and cannot be modified.
      */
     public static function updateUserRole(): void {
         require_admin();
@@ -69,19 +70,13 @@ class AdminController {
             redirect(BASE_URL . '/public/index.php?page=admin-users');
         }
 
-        // Strict Master Admin check: only Boddeda Prudhvi can change roles
-        if (!is_master_admin()) {
-            set_flash('error', 'Action prohibited: Only the Master Administrator (Boddeda Prudhvi) has permission to change user access roles.');
-            redirect(BASE_URL . '/public/index.php?page=admin-users');
-        }
-
         $userId  = (int) ($_POST['user_id'] ?? 0);
         $newRole = trim($_POST['new_role'] ?? '');
         $currentUser = auth_user();
 
-        // Prevent self-lockout: Master Admin cannot demote their own account
-        if ($userId === (int) $currentUser['id']) {
-            set_flash('error', 'Action prohibited: You cannot modify your own Master Administrator account role.');
+        // 1. Prevent self-lockout: An admin cannot demote their own account to 'user'
+        if ($userId === (int) $currentUser['id'] && $newRole !== 'admin') {
+            set_flash('error', 'Action prohibited: You cannot demote your own administrator account.');
             redirect(BASE_URL . '/public/index.php?page=admin-users');
         }
 
@@ -91,9 +86,9 @@ class AdminController {
             redirect(BASE_URL . '/public/index.php?page=admin-users');
         }
 
-        // Prevent modifying Master Admin account
+        // 2. Strict Master Admin Protection: NO ONE can change the role of the Master Admin (Boddeda Prudhvi)
         if (is_master_admin($targetUser)) {
-            set_flash('error', 'Action prohibited: The Master Administrator account role cannot be changed.');
+            set_flash('error', 'Action prohibited: The Master Administrator (Boddeda Prudhvi) role is permanent and cannot be modified by any administrator.');
             redirect(BASE_URL . '/public/index.php?page=admin-users');
         }
 
