@@ -326,9 +326,16 @@ A combined verification strategy was used consisting of manual exploratory testi
 
 ---
 
-## 11. Known Limitations
+## 11. Known Limitations & Technical Observations
 
-1. **Email Service for Password Reset:**
-   - In accordance with production security standards, an in-browser password reset that displays reset tokens or links directly on the screen without external verification was omitted. A production deployment requires an external transactional email provider (such as SMTP, Amazon SES, or SendGrid) to securely deliver time-limited tokens to verified user email addresses.
-2. **File Attachments & Sub-tasks:**
-   - Tasks currently store titles, rich descriptions, priorities, deadlines, and statuses; file uploads (e.g., attachments or PDFs) and nested sub-tasks were not part of the initial assignment scope.
+1. **Password Reset Requires External Mail Service (SMTP / Transactional API):**
+   - In a local XAMPP environment without a configured mail server or transactional email API (such as SendGrid, Amazon SES, or Mailgun), automated dispatch of password reset links cannot be performed out-of-the-box.
+   - An in-browser mock reset link was intentionally removed during development because displaying reset tokens directly in the UI creates a critical security vulnerability where anyone could hijack another user's account.
+2. **Absence of an Asynchronous Background Job Queue / Worker:**
+   - Core PHP on Apache processes requests synchronously per HTTP lifecycle. There is currently no background worker or message queue (such as Redis, RabbitMQ, or a cron daemon) to handle scheduled tasks, such as automated deadline reminder notifications or recurring task generation.
+3. **No File Attachments or Nested Sub-Tasks:**
+   - Tasks currently manage structured metadata (title, rich description, priority, deadline, and lifecycle status). Uploading file attachments (e.g., documents, images) or breaking complex tasks down into checklist sub-items is not yet supported and would require dedicated file storage and relational schema additions.
+4. **External CDN Dependency for UI Assets:**
+   - Tailwind CSS CDN and Google Material Symbols rely on an active internet connection. In an air-gapped or completely offline local environment, the interface falls back to system fonts and unstyled fallbacks unless pre-compiled static CSS assets are packaged locally.
+5. **Session Inactivity Idle Timeout:**
+   - Session expiration currently relies on standard PHP session cookie behavior and browser closure rather than an active JavaScript/sliding-window idle timer (e.g., automatic logout after 15 minutes of user inactivity).
