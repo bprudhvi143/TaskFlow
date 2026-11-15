@@ -61,8 +61,8 @@ $userInitial = strtoupper(substr($userName, 0, 1));
                 </div>
                 <div class="truncate">
                     <p class="text-xs font-semibold text-on-surface truncate leading-tight"><?= e($userName) ?></p>
-                    <span class="text-[10px] uppercase font-semibold tracking-wide <?= $userRole === 'admin' ? 'text-primary' : 'text-secondary' ?>">
-                        <?= e($userRole === 'admin' ? 'Administrator' : 'Standard User') ?>
+                    <span class="text-[10px] uppercase font-semibold tracking-wide <?= is_master_admin($user) ? 'text-emerald-800 font-bold' : ($userRole === 'admin' ? 'text-primary' : 'text-secondary') ?>">
+                        <?= is_master_admin($user) ? 'Master Administrator' : e($userRole === 'admin' ? 'Administrator' : 'Standard User') ?>
                     </span>
                 </div>
             </div>

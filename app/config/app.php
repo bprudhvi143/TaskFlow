@@ -133,11 +133,43 @@ function auth_user(): ?array {
 }
 
 /**
+ * Master Administrator Configuration
+ * Boddeda Prudhvi holds exclusive authority to change roles (user <-> admin)
+ */
+if (!defined('MASTER_ADMIN_EMAIL')) {
+    define('MASTER_ADMIN_EMAIL', 'prudhviboddeda5@gmail.com');
+}
+
+/**
  * Check if authenticated user has Admin role
  */
 function is_admin(): bool {
     $user = auth_user();
     return $user && ($user['role'] ?? '') === 'admin';
+}
+
+/**
+ * Check if a given user array or the currently authenticated user is the Master Administrator
+ */
+function is_master_admin(?array $user = null): bool {
+    if ($user === null) {
+        $user = auth_user();
+    }
+    if (!$user) {
+        return false;
+    }
+    return strtolower(trim($user['email'] ?? '')) === strtolower(MASTER_ADMIN_EMAIL);
+}
+
+/**
+ * Guard route: require Master Admin privileges
+ */
+function require_master_admin(): void {
+    require_admin();
+    if (!is_master_admin()) {
+        set_flash('error', 'Action prohibited: Only the Master Administrator (Boddeda Prudhvi) has permission to change user access roles.');
+        redirect(BASE_URL . '/public/index.php?page=admin-users');
+    }
 }
 
 /**

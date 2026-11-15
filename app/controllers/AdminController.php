@@ -58,7 +58,8 @@ class AdminController {
     }
 
     /**
-     * Update User Role (Admin Privilege)
+     * Update User Role (Exclusive Master Administrator Privilege)
+     * Boddeda Prudhvi can change user <-> admin; other admins cannot.
      */
     public static function updateUserRole(): void {
         require_admin();
@@ -68,13 +69,31 @@ class AdminController {
             redirect(BASE_URL . '/public/index.php?page=admin-users');
         }
 
+        // Strict Master Admin check: only Boddeda Prudhvi can change roles
+        if (!is_master_admin()) {
+            set_flash('error', 'Action prohibited: Only the Master Administrator (Boddeda Prudhvi) has permission to change user access roles.');
+            redirect(BASE_URL . '/public/index.php?page=admin-users');
+        }
+
         $userId  = (int) ($_POST['user_id'] ?? 0);
         $newRole = trim($_POST['new_role'] ?? '');
         $currentUser = auth_user();
 
-        // Prevent self-lockout: Admin cannot demote their own account to 'user'
-        if ($userId === (int) $currentUser['id'] && $newRole !== 'admin') {
-            set_flash('error', 'Action prohibited: You cannot demote your own administrator account.');
+        // Prevent self-lockout: Master Admin cannot demote their own account
+        if ($userId === (int) $currentUser['id']) {
+            set_flash('error', 'Action prohibited: You cannot modify your own Master Administrator account role.');
+            redirect(BASE_URL . '/public/index.php?page=admin-users');
+        }
+
+        $targetUser = User::findById($userId);
+        if (!$targetUser) {
+            set_flash('error', 'User not found in system.');
+            redirect(BASE_URL . '/public/index.php?page=admin-users');
+        }
+
+        // Prevent modifying Master Admin account
+        if (is_master_admin($targetUser)) {
+            set_flash('error', 'Action prohibited: The Master Administrator account role cannot be changed.');
             redirect(BASE_URL . '/public/index.php?page=admin-users');
         }
 
@@ -84,9 +103,10 @@ class AdminController {
         }
 
         if (User::updateRole($userId, $newRole)) {
-            set_flash('success', "User role updated successfully to {$newRole}.");
+            $formattedRole = ($newRole === 'admin') ? 'Administrator' : 'Standard User';
+            set_flash('success', "Access role for '{$targetUser['name']}' has been successfully changed to {$formattedRole}.");
         } else {
-            set_flash('error', 'Failed to update user role.');
+            set_flash('error', 'Failed to update user role in database.');
         }
 
         redirect(BASE_URL . '/public/index.php?page=admin-users');

@@ -10,6 +10,7 @@ require_once __DIR__ . '/../layouts/toast.php';
 require_once __DIR__ . '/../layouts/sidebar.php';
 
 $currentUser = auth_user();
+$isMasterAdmin = is_master_admin($currentUser);
 ?>
 <div class="ml-64 min-h-screen flex flex-col justify-between bg-background">
     <div class="flex-1">
@@ -37,11 +38,27 @@ $currentUser = auth_user();
             <!-- Title & Subtitle -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 class="font-heading text-2xl sm:text-3xl font-bold text-on-surface tracking-tight">
-                        User Directory & Access Control
-                    </h1>
+                    <div class="flex items-center gap-2.5">
+                        <h1 class="font-heading text-2xl sm:text-3xl font-bold text-on-surface tracking-tight">
+                            User Directory & Access Control
+                        </h1>
+                        <?php if ($isMasterAdmin): ?>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-xs">Master Authority</span>
+                        <?php endif; ?>
+                    </div>
                     <p class="text-xs sm:text-sm text-on-surface-variant mt-1">
                         View registered users, monitor task activity, and configure administrative role permissions.
+                        <?php if ($isMasterAdmin): ?>
+                        <span class="inline-flex items-center gap-1 font-semibold text-primary ml-1">
+                            <span class="material-symbols-outlined text-[14px]">verified_user</span>
+                            Master Admin Mode (You can promote users to admin or demote admins to user)
+                        </span>
+                        <?php else: ?>
+                        <span class="inline-flex items-center gap-1 text-on-surface-variant font-medium ml-1">
+                            <span class="material-symbols-outlined text-[14px]">lock</span>
+                            Role changes restricted exclusively to Master Admin (Boddeda Prudhvi)
+                        </span>
+                        <?php endif; ?>
                     </p>
                 </div>
             </div>
@@ -108,7 +125,9 @@ $currentUser = auth_user();
                                         <div>
                                             <span class="font-semibold text-on-surface text-sm block leading-tight group-hover:text-primary transition-colors">
                                                 <?= e($u['name']) ?>
-                                                <?php if ((int)$u['id'] === (int)$currentUser['id']): ?>
+                                                <?php if (is_master_admin($u)): ?>
+                                                <span class="ml-1 text-[10px] bg-gradient-to-r from-emerald-800 to-teal-900 text-white px-2 py-0.5 rounded font-bold tracking-wide shadow-xs">MASTER</span>
+                                                <?php elseif ((int)$u['id'] === (int)$currentUser['id']): ?>
                                                 <span class="ml-1 text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-normal">(You)</span>
                                                 <?php endif; ?>
                                             </span>
@@ -119,7 +138,12 @@ $currentUser = auth_user();
 
                                 <!-- Role Badge -->
                                 <td class="py-4 px-4 whitespace-nowrap">
-                                    <?php if ($u['role'] === 'admin'): ?>
+                                    <?php if (is_master_admin($u)): ?>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-xs">
+                                        <span class="material-symbols-outlined text-[14px]">shield_with_heart</span>
+                                        Master Admin
+                                    </span>
+                                    <?php elseif ($u['role'] === 'admin'): ?>
                                     <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary text-on-primary">
                                         <span class="material-symbols-outlined text-[14px]">shield_person</span>
                                         Administrator
@@ -153,7 +177,7 @@ $currentUser = auth_user();
                                     <?= date('M j, Y', strtotime($u['created_at'])) ?>
                                 </td>
 
-                                <!-- Actions: View Tasks & Change Role -->
+                                <!-- Actions: View Tasks & Change Role (Only Master Admin can change roles) -->
                                 <td class="py-4 px-6 text-right whitespace-nowrap">
                                     <div class="inline-flex items-center justify-end gap-2">
                                         <button type="button" 
@@ -163,12 +187,28 @@ $currentUser = auth_user();
                                             <span class="material-symbols-outlined text-[16px]">visibility</span>
                                             <span>Tasks</span>
                                         </button>
-                                        <button type="button" 
-                                                onclick='openRoleModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
-                                                class="px-2.5 py-1.5 rounded-lg border border-outline-variant/40 hover:bg-surface-container text-on-surface text-xs font-semibold inline-flex items-center gap-1 transition-colors">
-                                            <span class="material-symbols-outlined text-[16px]">manage_accounts</span>
-                                            <span>Role</span>
-                                        </button>
+
+                                        <?php if ($isMasterAdmin): ?>
+                                            <?php if (is_master_admin($u)): ?>
+                                            <span class="px-2.5 py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant/50 text-xs font-medium inline-flex items-center gap-1 cursor-default" title="Master Administrator account is permanent and cannot be modified">
+                                                <span class="material-symbols-outlined text-[15px]">lock</span>
+                                                <span>Protected</span>
+                                            </span>
+                                            <?php else: ?>
+                                            <button type="button" 
+                                                    onclick='openRoleModal(<?= htmlspecialchars(json_encode($u), ENT_QUOTES, 'UTF-8') ?>)'
+                                                    class="px-2.5 py-1.5 rounded-lg border border-primary/30 bg-primary/5 hover:bg-primary text-primary hover:text-on-primary text-xs font-semibold inline-flex items-center gap-1 transition-all shadow-xs"
+                                                    title="<?= $u['role'] === 'admin' ? 'Change Admin to User' : 'Change User to Admin' ?>">
+                                                <span class="material-symbols-outlined text-[16px]">manage_accounts</span>
+                                                <span>Change Role</span>
+                                            </button>
+                                            <?php endif; ?>
+                                        <?php else: ?>
+                                            <span class="px-2 py-1 rounded text-[11px] text-on-surface-variant/60 font-medium inline-flex items-center gap-1" title="Only Master Admin (Boddeda Prudhvi) can change user roles">
+                                                <span class="material-symbols-outlined text-[14px]">lock</span>
+                                                <span>Master Only</span>
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
@@ -186,7 +226,8 @@ $currentUser = auth_user();
     </footer>
 </div>
 
-<!-- Change User Role Modal (Stitch Screen bb2c187ad5e645ad994858747ca28e23) -->
+<?php if ($isMasterAdmin): ?>
+<!-- Change User Role Modal (Exclusive Master Administrator Control) -->
 <div id="roleModalBackdrop" 
      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/40 backdrop-blur-sm transition-all duration-200 hidden opacity-0"
      role="dialog" aria-modal="true">
@@ -195,11 +236,14 @@ $currentUser = auth_user();
         
         <div class="flex items-start justify-between pb-3 border-b border-outline-variant/30">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-emerald-800 to-teal-900 text-white flex items-center justify-center shadow-xs">
                     <span class="material-symbols-outlined text-[22px]">manage_accounts</span>
                 </div>
                 <div>
-                    <span class="text-[11px] text-primary uppercase font-bold tracking-wider">Role Assignment</span>
+                    <span class="text-[11px] text-emerald-800 uppercase font-bold tracking-wider flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[13px]">shield_with_heart</span>
+                        Master Admin Authorization
+                    </span>
                     <h3 class="font-heading text-lg font-bold text-on-surface">Change User Role</h3>
                 </div>
             </div>
@@ -211,6 +255,10 @@ $currentUser = auth_user();
         <form action="<?= BASE_URL ?>/public/actions/admin-role.php?action=update-role" method="POST" class="mt-4 flex flex-col gap-4">
             <?= csrf_field() ?>
             <input type="hidden" name="user_id" id="role_user_id" value="">
+
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+                As Master Administrator, you have exclusive privilege to change a user to administrator or demote an administrator to standard user.
+            </p>
 
             <!-- Target User Banner -->
             <div class="p-3 rounded-lg bg-surface-container-low flex items-center gap-3">
@@ -229,8 +277,8 @@ $currentUser = auth_user();
                 <div class="relative flex items-center">
                     <select name="new_role" id="new_role"
                             class="w-full pl-3.5 pr-10 py-2.5 bg-surface-container-low text-on-surface text-sm rounded-lg border border-outline-variant/30 focus:border-primary focus:bg-surface-container-lowest outline-none appearance-none cursor-pointer">
-                        <option value="user">Standard User (Restricted to own tasks)</option>
-                        <option value="admin">Administrator (Full oversight across all tasks & users)</option>
+                        <option value="user">Standard User (Restricted to personal workspace)</option>
+                        <option value="admin">Administrator (Global task and user directory oversight)</option>
                     </select>
                     <span class="material-symbols-outlined absolute right-3 pointer-events-none text-on-surface-variant text-[20px]">expand_more</span>
                 </div>
@@ -251,6 +299,7 @@ $currentUser = auth_user();
 
     </div>
 </div>
+<?php endif; ?>
 
 <!-- User Tasks Inspection Modal -->
 <div id="userTasksModalBackdrop" 
@@ -345,7 +394,10 @@ function openUserTasksModal(userData) {
     
     // Role badge
     const roleBadge = document.getElementById('userTaskModalRoleBadge');
-    if (userData.role === 'admin') {
+    if (userData.email && userData.email.toLowerCase() === 'prudhviboddeda5@gmail.com') {
+        roleBadge.textContent = 'Master Admin';
+        roleBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-emerald-800 to-teal-900 text-white';
+    } else if (userData.role === 'admin') {
         roleBadge.textContent = 'Administrator';
         roleBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary text-on-primary';
     } else {
