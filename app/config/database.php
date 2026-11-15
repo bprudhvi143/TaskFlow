@@ -14,11 +14,11 @@ class Database {
      */
     public static function getConnection(): PDO {
         if (self::$instance === null) {
-            $host = getenv('DB_HOST') ?: '127.0.0.1';
-            $port = getenv('DB_PORT') ?: '3306';
-            $dbname = getenv('DB_NAME') ?: 'task_flow';
-            $user = getenv('DB_USER') ?: 'root';
-            $pass = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
+            $host   = env('DB_HOST', '127.0.0.1');
+            $port   = env('DB_PORT', '3306');
+            $dbname = env('DB_NAME', 'task_flow');
+            $user   = env('DB_USER', 'root');
+            $pass   = env('DB_PASS', '');
 
             $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
             

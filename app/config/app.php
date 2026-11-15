@@ -22,21 +22,35 @@ if (file_exists($envFile)) {
                 (str_starts_with($val, "'") && str_ends_with($val, "'"))) {
                 $val = substr($val, 1, -1);
             }
-            if (!isset($_SERVER[$key]) && !isset($_ENV[$key])) {
-                putenv("$key=$val");
-                $_ENV[$key] = $val;
-                $_SERVER[$key] = $val;
-            }
+            @putenv("$key=$val");
+            $_ENV[$key] = $val;
+            $_SERVER[$key] = $val;
         }
+    }
+}
+
+if (!function_exists('env')) {
+    function env(string $key, $default = null) {
+        if (isset($_ENV[$key]) && $_ENV[$key] !== '') {
+            return $_ENV[$key];
+        }
+        if (isset($_SERVER[$key]) && $_SERVER[$key] !== '') {
+            return $_SERVER[$key];
+        }
+        $val = getenv($key);
+        if ($val !== false && $val !== '') {
+            return $val;
+        }
+        return $default;
     }
 }
 
 // 2. Global Constants
 if (!defined('APP_NAME')) {
-    define('APP_NAME', getenv('APP_NAME') ?: 'TaskFlow');
+    define('APP_NAME', env('APP_NAME', 'TaskFlow'));
 }
 if (!defined('BASE_URL')) {
-    $envUrl = getenv('APP_URL');
+    $envUrl = env('APP_URL');
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
                (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ||
                (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
