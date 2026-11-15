@@ -73,8 +73,12 @@ class TaskController {
             $priority = 'Medium';
         }
 
-        if (!empty($dueDate) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dueDate)) {
-            $errors[] = 'Invalid due date format. Please select a valid calendar date.';
+        if (!empty($dueDate)) {
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dueDate)) {
+                $errors[] = 'Invalid due date format. Please select a valid calendar date.';
+            } elseif ($dueDate < date('Y-m-d')) {
+                $errors[] = 'Task deadline must be today or a future date. Past dates cannot be set as a deadline.';
+            }
         }
 
         if (!empty($errors)) {
@@ -143,8 +147,12 @@ class TaskController {
             $priority = $existing['priority'];
         }
 
-        if (!empty($dueDate) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dueDate)) {
-            $errors[] = 'Invalid due date format.';
+        if (!empty($dueDate)) {
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dueDate)) {
+                $errors[] = 'Invalid due date format. Please select a valid calendar date.';
+            } elseif ($dueDate !== $existing['due_date'] && $dueDate < date('Y-m-d')) {
+                $errors[] = 'Task deadline must be today or a future date. Past dates cannot be set as a deadline.';
+            }
         }
 
         if (!empty($errors)) {

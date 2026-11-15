@@ -14,7 +14,8 @@
 | **Suite B** | Level 2 – Status, Search & Validation | 8 | 8 | 0 | **PASSED** |
 | **Suite C** | Level 3 – Authentication, Security & RBAC | 10 | 10 | 0 | **PASSED** |
 | **Suite D** | Security & Tampering Resistance | 5 | 5 | 0 | **PASSED** |
-| **Total** | | **29** | **29** | **0** | **100% Pass** |
+| **Suite E** | Date Restrictions & Advanced UI Controls | 2 | 2 | 0 | **PASSED** |
+| **Total** | | **31** | **31** | **0** | **100% Pass** |
 
 ---
 
@@ -74,3 +75,44 @@
 | **T-20** | SQL Injection attempt in search | Search with payload `' OR '1'='1' -- `. | Safely treated as literal search string via PDO prepared statement. | Query executed cleanly; returned 0 matching records without SQL syntax errors. | PASS |
 | **T-21** | SQL Injection attempt in login | Login email: `prudhviboddeda5@gmail.com' OR 1=1 --`. | Safely bound via PDO; no bypass occurs. | Login failed; treated as non-existent email literal. | PASS |
 | **T-22** | XSS payload rendering | Create task with title `<script>alert('XSS')</script>`. | Script tags are escaped with `htmlspecialchars()` during HTML rendering. | Rendered as text `&lt;script&gt;alert('XSS')&lt;/script&gt;`; no JavaScript execution. | PASS |
+
+---
+
+### Suite E: Date Restrictions & Advanced UI Controls
+
+| Test ID | Test Scenario | Steps Taken | Expected Outcome | Actual Result | Status |
+|---|---|---|---|---|---|
+| **T-30** | Task Deadline Restriction to Today or Future Date | Attempt to submit task with a past due date (`2026-11-13`). | Client-side picker restricts past dates with `min="YYYY-MM-DD"`. If bypassed via direct HTTP POST, server-side validation rejects with error message: *"Task deadline must be today or a future date. Past dates cannot be set as a deadline."* | Server rejected past date with friendly flash message; valid tasks with today or future deadlines created successfully. | PASS |
+| **T-31** | Action Column UI Cleanup | Inspect task rows on User Dashboard and Admin System Tasks. | Action column contains only the essential Edit (pencil) and Delete (trash) icons. Redundant static checkmark beside delete is removed; status changes handled cleanly via the status chip. | Redundant checkmark icon completely removed from Action column. | PASS |
+
+---
+
+## 3. TestSprite MCP Testing Suite Integration
+
+| Phase | Tool Name | Scope & Execution | Output Artifact | Status |
+|---|---|---|---|---|
+| **Phase 1** | `testsprite_bootstrap` | Initialized TestSprite workspace and verified server endpoint `http://localhost:80/task-tracker/public/index.php`. | `testsprite_tests/tmp/config.json` | **COMPLETED** |
+| **Phase 2** | `testsprite_generate_code_summary` | Extracted full tech stack (Core PHP 8.3, MySQL, Tailwind, Vanilla JS) and routes. | `testsprite_tests/tmp/code_summary.yaml` | **COMPLETED** |
+| **Phase 3** | `testsprite_generate_standardized_prd` | Generated structured PRD requirements for user roles, task lifecycle, and security controls. | `testsprite_tests/standard_prd.json` | **COMPLETED** |
+| **Phase 4** | `testsprite_generate_frontend_test_plan` | Generated comprehensive end-to-end frontend test plans covering user login, task CRUD, status change, and validation flows. | `testsprite_tests/testsprite_frontend_test_plan.json` | **COMPLETED** |
+| **Phase 5** | `testsprite_generate_code_and_execute` | Executed targeted test scenarios against local Apache/XAMPP server. | `testsprite_tests/tmp/mcp.log` | **COMPLETED** |
+
+---
+
+## 4. Summary of Bugs Found and Fixed
+
+During the end-to-end development, testing, and hardening phases, several bugs, UI anomalies, and edge cases were discovered and resolved:
+
+| Bug # | Severity | Defect Description | Root Cause | Fix & Resolution |
+|---|---|---|---|---|
+| **BUG-01** | **Critical (Security)** | Admin could demote their own account, causing administrative lockout. | `AdminController::updateUserRole()` did not check if the target `user_id` matched `$_SESSION['user']['id']`. | Added guard: `if ($targetUserId === (int) $currentUser['id']) { set_flash('error', 'You cannot change your own administrative role.'); }`. |
+| **BUG-02** | **High (Data Integrity)** | Task deadlines could be set to arbitrary past dates. | `TaskController::create()` and `update()` only checked date regex format without verifying `$dueDate >= date('Y-m-d')`. | Added server-side validation: if `$dueDate < date('Y-m-d')`, rejected with *"Task deadline must be today or a future date. Past dates cannot be set as a deadline."* Added client-side HTML5 `min="<?= date('Y-m-d') ?>"` and JS submit listener validation. |
+| **BUG-03** | **Medium (UI / UX)** | Completed tasks were struck through, hindering readability. | CSS class `line-through opacity-60` was applied to title and description when `status === 'Completed'`. | Replaced strikethrough with a clean emerald checkmark badge, soft background accent, and repositioned completed tasks to the bottom of the active list. |
+| **BUG-04** | **Medium (UX)** | Changing task status required opening the full task edit form. | No lightweight status transition mechanism existed in the table view. | Added a Quick Status Change modal triggered by clicking the status chip next to the title, enabling instant status updates without editing task details. |
+| **BUG-05** | **Low (Visual Polish)** | Redundant tick mark beside delete button in Actions column. | An extra static check icon was present in the Actions column template alongside the edit and delete action buttons. | Removed the redundant checkmark icon from both User Dashboard and Admin All Tasks views. |
+| **BUG-06** | **High (Security)** | Weak passwords (e.g. `password123`) permitted during registration. | Regex validation only checked `strlen >= 6` without character complexity rules. | Implemented 5 strict password rules: minimum 8 characters, upper + lower case letters, numbers, special characters, and exclusion of user name/email tokens. |
+| **BUG-07** | **High (Security)** | Cross-site Request Forgery (CSRF) vulnerability on unauthenticated forms. | Forms lacked anti-forgery token verification. | Implemented cryptographically secure CSRF tokens (`bin2hex(random_bytes(32))`) generated per session and validated on all POST action handlers. |
+| **BUG-08** | **High (Authorization)** | Insecure Direct Object Reference (IDOR) on task update and deletion. | Backend queries did not scope `WHERE id = :id AND user_id = :user_id`. | Hardened all SQL queries in `Task::update()` and `Task::delete()` to enforce `user_id` ownership on the server side regardless of manipulated client payloads. |
+| **BUG-09** | **Medium (Navigation)** | Clicking dashboard status metric cards did not filter tasks. | Metric cards were non-interactive static `<div>` containers. | Converted metric cards into clickable navigation links appending `?page=dashboard&status={Status}` to seamlessly filter tasks. |
+| **BUG-10** | **Low (Display)** | Clicking a user row in Admin Directory showed no task details. | Admin user list had no detailed workload drill-down modal. | Added `modal-user-tasks.php` with dynamic JS loader displaying the selected user's active tasks, due dates, and priorities. |
+

@@ -9,3 +9,5 @@ Thumbs.db
 
 # Local logs
 *.log
+testsprite_tests/tmp/
+testsprite_tests/tmp/config.json

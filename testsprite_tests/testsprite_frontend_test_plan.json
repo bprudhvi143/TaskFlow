@@ -1,0 +1,746 @@
+[
+  {
+    "id": "TC001",
+    "title": "Create, inspect, edit, reschedule, and delete a personal task",
+    "description": "A logged-in user can complete the full personal task lifecycle from creation through inspection, editing, quick status update, and deletion.",
+    "category": "Task Management (CRUD)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=login"
+      },
+      {
+        "type": "action",
+        "description": "Toggle to login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open task creation"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the task title field with a unique task name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the task description field with a brief task description"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid task status"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid task priority"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid future due date"
+      },
+      {
+        "type": "action",
+        "description": "Submit the task form"
+      },
+      {
+        "type": "action",
+        "description": "Open the newly created task for inspection"
+      },
+      {
+        "type": "action",
+        "description": "Close the task inspection view"
+      },
+      {
+        "type": "action",
+        "description": "Open the edit form for the same task"
+      },
+      {
+        "type": "action",
+        "description": "Change the task title to a revised unique task name"
+      },
+      {
+        "type": "action",
+        "description": "Submit the task form"
+      },
+      {
+        "type": "action",
+        "description": "Open the quick status control for the same task"
+      },
+      {
+        "type": "action",
+        "description": "Select a completed status"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the status change"
+      },
+      {
+        "type": "action",
+        "description": "Start deleting the same task"
+      },
+      {
+        "type": "action",
+        "description": "Confirm deletion"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task is removed from the list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Log in and reach the dashboard",
+    "description": "A returning user can log in with valid credentials and land on the task dashboard.",
+    "category": "User Authentication & Registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=login"
+      },
+      {
+        "type": "action",
+        "description": "Toggle to login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the task dashboard"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Register a new account successfully",
+    "description": "A new visitor can create an account with valid details and see a successful account creation outcome.",
+    "category": "User Authentication & Registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=login"
+      },
+      {
+        "type": "action",
+        "description": "Toggle to account creation"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the full name field with a valid name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a unique valid email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with a strong valid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a successful account creation message is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Prevent unauthorized dashboard access",
+    "description": "A visitor who is not logged in is blocked from accessing the dashboard and is redirected or denied access.",
+    "category": "User Authentication & Registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is denied or the user is redirected to the login page"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Block access to admin routes for non-admin users",
+    "description": "A non-admin authenticated user cannot access the admin task or user management pages and is denied or redirected.",
+    "category": "Administrator User Directory and Access Control",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=login"
+      },
+      {
+        "type": "action",
+        "description": "Toggle to login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=admin-tasks"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is denied or the user is redirected away from the admin tasks page"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=admin-users"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is denied or the user is redirected away from the admin users page"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Browse system tasks and manage a user role as admin",
+    "description": "An administrator can inspect organization tasks, then review a user's workload and change that user's role from the admin directory.",
+    "category": "Administrator System Tasks Console",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=login"
+      },
+      {
+        "type": "action",
+        "description": "Toggle to login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the system tasks console"
+      },
+      {
+        "type": "action",
+        "description": "Enter a task search query"
+      },
+      {
+        "type": "action",
+        "description": "Select a task status filter"
+      },
+      {
+        "type": "action",
+        "description": "Open a task for inspection"
+      },
+      {
+        "type": "action",
+        "description": "Close the task inspection view"
+      },
+      {
+        "type": "action",
+        "description": "Open the user directory"
+      },
+      {
+        "type": "action",
+        "description": "Open a user's workload details"
+      },
+      {
+        "type": "action",
+        "description": "Change the user's role"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user's role change is reflected in the directory"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user workload details are visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "View organization tasks in the admin console",
+    "description": "An administrator can open the system tasks console and see organization-wide tasks across users.",
+    "category": "Administrator User & Task Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=admin-tasks"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the organization-wide task list is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Change a user's role from the directory",
+    "description": "An administrator can update a user's role and see the new role reflected in the user directory.",
+    "category": "Administrator User & Task Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=admin-users"
+      },
+      {
+        "type": "action",
+        "description": "Change a user's role"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user's updated role is reflected in the directory"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Update task status and keep list order current",
+    "description": "A logged-in user can change a task status quickly and see the task repositioned and highlighted in the list.",
+    "category": "Quick Status Update",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=login"
+      },
+      {
+        "type": "action",
+        "description": "Toggle to login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the quick status control for a task"
+      },
+      {
+        "type": "action",
+        "description": "Select a different status"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the status change"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task reflects the updated status"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task list repositions the task according to its new status"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Combine search and status filters",
+    "description": "A user can combine a status filter with a search term and see the narrowed task results.",
+    "category": "Search and Filter",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select a status filter from a summary metric card"
+      },
+      {
+        "type": "action",
+        "description": "Type a search term into the task search field"
+      },
+      {
+        "type": "action",
+        "description": "Apply the search"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task list shows only results matching both the search term and selected status"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Search tasks by title",
+    "description": "A user can search the dashboard task list by title and see matching tasks displayed.",
+    "category": "Search and Filter",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Type a search term into the task search field"
+      },
+      {
+        "type": "action",
+        "description": "Apply the search"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify matching tasks are displayed in the task list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Search and filter personal tasks",
+    "description": "A logged-in user can combine a text search with a status filter and see the personal task list update accordingly.",
+    "category": "Task Management (CRUD)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=login"
+      },
+      {
+        "type": "action",
+        "description": "Toggle to login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Enter a task title search query"
+      },
+      {
+        "type": "action",
+        "description": "Select a status filter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task list updates to match the combined search and filter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the matching tasks are reordered or highlighted according to the filter state"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Filter tasks by status",
+    "description": "A user can filter the dashboard task list by status and see only tasks in that status.",
+    "category": "Search and Filter",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select a status filter from a summary metric card"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task list updates to show tasks in the selected status"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "Search and filter organization tasks",
+    "description": "An administrator can search and filter tasks in the system tasks console and see the filtered results update.",
+    "category": "Administrator User & Task Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=admin-tasks"
+      },
+      {
+        "type": "action",
+        "description": "Type a search term into the admin task search field"
+      },
+      {
+        "type": "action",
+        "description": "Select a task status filter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task list updates to show matching organization tasks"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "Inspect an organization task",
+    "description": "An administrator can open a task from the system tasks console and see its detailed information.",
+    "category": "Administrator User & Task Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=admin-tasks"
+      },
+      {
+        "type": "action",
+        "description": "Open a task from the organization-wide list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a task detail view is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task's detailed information is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC016",
+    "title": "View a user's workload breakdown",
+    "description": "An administrator can open a user from the directory and see that user's workload metrics and full task breakdown.",
+    "category": "Administrator User & Task Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=admin-users"
+      },
+      {
+        "type": "action",
+        "description": "Open a user from the directory"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user's task breakdown view is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user's workload metrics and task list are visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC017",
+    "title": "Validate required and boundary task fields",
+    "description": "A logged-in user sees validation feedback when creating a task with missing or invalid fields and can then save it after correcting the input.",
+    "category": "Task Management (CRUD)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=login"
+      },
+      {
+        "type": "action",
+        "description": "Toggle to login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open task creation"
+      },
+      {
+        "type": "action",
+        "description": "Submit the task form without entering a title"
+      },
+      {
+        "type": "action",
+        "description": "Verify a required title validation error is visible"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the task title field with an overlong title"
+      },
+      {
+        "type": "action",
+        "description": "Submit the task form"
+      },
+      {
+        "type": "action",
+        "description": "Verify a title length validation error is visible"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the task title field with a valid title"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid future due date"
+      },
+      {
+        "type": "action",
+        "description": "Submit the task form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task is saved"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC018",
+    "title": "Show matching tasks at the top after filtering",
+    "description": "A user can filter tasks and see the most relevant matching results repositioned in the list.",
+    "category": "Search and Filter",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Type a search term into the task search field"
+      },
+      {
+        "type": "action",
+        "description": "Apply the search"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the matching tasks appear in the visible results list"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC019",
+    "title": "Reject invalid login credentials",
+    "description": "A returning user entering invalid credentials sees a login error and does not reach the dashboard.",
+    "category": "User Authentication & Registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=login"
+      },
+      {
+        "type": "action",
+        "description": "Toggle to login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid email format that is not registered"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with an incorrect password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login error message is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user does not land on the task dashboard"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC020",
+    "title": "Handle empty search results on the dashboard",
+    "description": "A user who searches for a non-matching term sees an empty state instead of task results.",
+    "category": "Search and Filter",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /task-tracker/public/index.php?page=dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Type a non-matching search term into the task search field"
+      },
+      {
+        "type": "action",
+        "description": "Apply the search"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty state message is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no task results are shown"
+      }
+    ],
+    "priority": "Low"
+  }
+]

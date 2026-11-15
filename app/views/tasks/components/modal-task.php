@@ -112,13 +112,30 @@
                     </div>
                 </div>
 
-                <!-- 4. Due Date (Optional) -->
+                <!-- 4. Due Date (Optional: Today or Future Date Only) -->
                 <div class="flex flex-col gap-1.5">
-                    <label for="due_date" class="text-xs font-semibold text-on-surface uppercase tracking-wider">Due Date <span class="font-normal text-on-surface-variant lowercase">(optional)</span></label>
+                    <div class="flex items-center justify-between">
+                        <label for="due_date" class="text-xs font-semibold text-on-surface uppercase tracking-wider">
+                            Due Date <span class="font-normal text-on-surface-variant lowercase">(optional)</span>
+                        </label>
+                        <span class="text-[11px] text-primary font-medium flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[13px]">event_available</span>
+                            Today or later
+                        </span>
+                    </div>
                     <div class="relative flex items-center">
-                        <input type="date" id="due_date" name="due_date"
+                        <input type="date" id="due_date" name="due_date" min="<?= date('Y-m-d') ?>"
+                               oninput="resetDueDateError(this)"
                                class="w-full px-3.5 py-2.5 bg-surface-container-low rounded-lg text-sm text-on-surface border border-outline-variant/30 focus:border-primary focus:bg-surface-container-lowest appearance-none outline-none transition-all">
                     </div>
+                    <p id="dueDateInlineError" class="text-[11px] text-error font-medium flex items-center gap-1 hidden">
+                        <span class="material-symbols-outlined text-[14px]">error</span>
+                        <span>Task deadline must be today or a future date.</span>
+                    </p>
+                    <p class="text-[11px] text-on-surface-variant flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">info</span>
+                        Past dates cannot be selected as a task deadline.
+                    </p>
                 </div>
 
             </div>

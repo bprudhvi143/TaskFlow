@@ -72,6 +72,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 titleInput.focus();
                 return false;
             }
+
+            // Deadline validation: must be today or future date
+            const dueDateInput = document.getElementById('due_date');
+            const dueDateInlineError = document.getElementById('dueDateInlineError');
+            if (dueDateInput && dueDateInput.value) {
+                const todayStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+                if (dueDateInput.value < todayStr) {
+                    e.preventDefault();
+                    dueDateInput.classList.add('!border-error', 'bg-error/5');
+                    if (dueDateInlineError) {
+                        dueDateInlineError.classList.remove('hidden');
+                    }
+                    dueDateInput.focus();
+                    return false;
+                }
+            }
         });
     }
 });
@@ -96,6 +112,16 @@ function openCreateModal() {
     if (inlineError) inlineError.classList.add('hidden');
     const titleInput = document.getElementById('task_title');
     if (titleInput) titleInput.classList.remove('!border-error', 'bg-error/5');
+
+    // Dynamic deadline constraint (today or later)
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    const dueDateInput = document.getElementById('due_date');
+    if (dueDateInput) {
+        dueDateInput.min = todayStr;
+        dueDateInput.classList.remove('!border-error', 'bg-error/5');
+    }
+    const dueDateInlineError = document.getElementById('dueDateInlineError');
+    if (dueDateInlineError) dueDateInlineError.classList.add('hidden');
 
     const backdrop = document.getElementById('taskModalBackdrop');
     const card = document.getElementById('taskModalCard');
@@ -130,6 +156,16 @@ function openEditModal(task) {
     if (inlineError) inlineError.classList.add('hidden');
     const titleInput = document.getElementById('task_title');
     if (titleInput) titleInput.classList.remove('!border-error', 'bg-error/5');
+
+    // Dynamic deadline constraint (today or later)
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    const dueDateInput = document.getElementById('due_date');
+    if (dueDateInput) {
+        dueDateInput.min = todayStr;
+        dueDateInput.classList.remove('!border-error', 'bg-error/5');
+    }
+    const dueDateInlineError = document.getElementById('dueDateInlineError');
+    if (dueDateInlineError) dueDateInlineError.classList.add('hidden');
 
     updateTitleCount(document.getElementById('task_title'));
 
@@ -219,6 +255,22 @@ function updateTitleCount(input) {
         } else {
             counter.classList.remove('text-error', 'font-bold');
             counter.classList.add('text-on-surface-variant');
+        }
+    }
+}
+
+/**
+ * Reset Due Date Error State on Input
+ */
+function resetDueDateError(input) {
+    const inlineError = document.getElementById('dueDateInlineError');
+    if (input) {
+        const todayStr = new Date().toLocaleDateString('en-CA');
+        if (!input.value || input.value >= todayStr) {
+            input.classList.remove('!border-error', 'bg-error/5');
+            if (inlineError) {
+                inlineError.classList.add('hidden');
+            }
         }
     }
 }
