@@ -86,7 +86,7 @@ The database comes pre-seeded with realistic, everyday test profiles adhering to
 
 | Role | Name | Email | Password | Sample Tasks / Scope |
 |---|---|---|---|---|
-| **Administrator** | Boddeda Prudhvi | `prudhviboddeda5@gmail.com` | `FalconShield#2026!Master` | 4 personal tasks + Full administrative oversight (`/admin/tasks`, `/admin/users`). |
+| **Master Administrator** | Boddeda Prudhvi | `prudhviboddeda5@gmail.com` | `FalconShield#2026!Master` | Master authority: 4 personal tasks, full administrative oversight (`/admin/tasks`, `/admin/users`), permanently immutable role. |
 | **Standard User** | Kalyan Varma | `kalyan.varma@gmail.com` | `SapphireWave@2026#Track` | 5 everyday tasks (groceries, electricity bill, doctor visit, car service, book renewal). |
 | **Standard User** | Ananya Rao | `ananya.rao@gmail.com` | `EmeraldPeak#2026$Nova` | 3 everyday tasks (insurance policy, AC servicing, water filter maintenance). |
 | **Standard User** | Suresh Reddy | `suresh.reddy@gmail.com` | `GoldenHorizon@2026!Hub` | 3 everyday tasks (Wi-Fi recharge, medicine restock, property tax payment). Demonstrates cross-user isolation. |
@@ -223,19 +223,23 @@ task-tracker/
 
 ## 7. Roles & Permissions (Level 3 RBAC)
 
-| Capability / Action | Standard User | Administrator |
-|---|:---:|:---:|
-| Register new account | Yes | Yes |
-| Sign in & view personal dashboard | Yes | Yes |
-| Create new personal task | Yes | Yes |
-| Edit personal task details | Yes | Yes |
-| Update personal task status | Yes | Yes |
-| Delete personal task | Yes | Yes |
-| View tasks belonging to other users | **No** (Blocked server-side) | Yes (via `/admin/tasks`) |
-| Edit/delete another user's task | **No** (HTTP 403 Forbidden) | Yes (Admin delete in oversight) |
-| Access Admin All Tasks console | **No** (Redirects to dashboard) | Yes |
-| Access Admin User Management | **No** (Redirects to dashboard) | Yes |
-| Promote/demote user roles | **No** (Unauthorized) | Yes (via Role modal) |
+The application implements a 3-tier Role-Based Access Control hierarchy:
+
+| Capability / Action | Standard User | Administrator | Master Administrator (`Boddeda Prudhvi`) |
+|---|:---:|:---:|:---:|
+| Register new account | Yes | Yes | Yes |
+| Sign in & view personal dashboard | Yes | Yes | Yes |
+| Create, edit, delete personal tasks | Yes | Yes | Yes |
+| Update task status (Pending / In Progress / Completed) | Yes | Yes | Yes |
+| View tasks belonging to other users | **No** (Enforced server-side) | Yes (via `/admin/tasks`) | Yes (via `/admin/tasks`) |
+| Inspect another user's task workload & details | **No** (Unauthorized) | Yes (via User Directory modal) | Yes (via User Directory modal) |
+| Force delete any system task in oversight | **No** (Unauthorized) | Yes | Yes |
+| Access Admin All Tasks console | **No** (Redirected to dashboard) | Yes | Yes |
+| Access Admin User Directory & Access Control | **No** (Redirected to dashboard) | Yes | Yes |
+| Promote standard user to Administrator (`user -> admin`) | **No** (Unauthorized) | Yes | Yes |
+| Demote Administrator to Standard User (`admin -> user`) | **No** (Unauthorized) | Yes (other admins) | Yes (other admins) |
+| Modify Master Administrator role | **No** (Unauthorized) | **No** (Permanently Protected) | **No** (Permanently Protected) |
+| Demote own administrator account (Self-lockout) | N/A | **No** (Blocked server-side) | **No** (Blocked server-side) |
 
 ---
 
@@ -253,23 +257,16 @@ mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS task_flow;"
 mysql -u root -p task_flow < task_flow_backup.sql
 ```
 
-Detailed instructions for automated cron backups are provided in `docs/backup-restore-guide.md`.
+Detailed instructions for automated cron backups and disaster recovery are provided in `docs/backup-restore-guide.md`.
 
 ---
 
 ## 9. AI Coding Assistant Disclosure
 
-In compliance with assignment submission instructions:
+In compliance with assignment submission guidelines:
 - **Assistant Used:** Google Antigravity (AGY) AI Assistant.
-- **Role:** Architectural planning, Google Stitch MCP design extraction, and scaffolding modular MVC structures.
-- **Manually Reviewed & Enhanced Change:**
-  - *Identified Issue in Generated Logic:* In the user role update endpoint (`AdminController::updateUserRole`), standard code generators allow an administrator to modify any user's role including their own. If the sole administrator demoted their own account to `user`, they would lock themselves out of the admin panel permanently.
-  - *Manual Review Modification:* Implemented a strict self-demotion prevention guard in `AdminController.php`:
-    ```php
-    // Prevent self-lockout: Admin cannot demote their own account to 'user'
-    if ($userId === (int) $currentUser['id'] && $newRole !== 'admin') {
-        set_flash('error', 'Action prohibited: You cannot demote your own administrator account.');
-        redirect(BASE_URL . '/public/index.php?page=admin-users');
-    }
-    ```
-    This ensures administrative continuity and avoids unintended privilege loss.
+- **Role:** Architectural planning, Google Stitch MCP design extraction, and scaffolding MVC components.
+- **Manual Review & Critical Changes Made to Generated Logic:**
+  1. *Master Admin Protection & Role Guard:* Standard code generation treated all admin accounts homogeneously. I identified this security gap and implemented a permanent protection mechanism in `AdminController.php` and `app.php` ensuring that the Master Administrator (`Boddeda Prudhvi` / `prudhviboddeda5@gmail.com`) cannot be demoted or altered by any user or administrator. Furthermore, I enforced self-demotion lockout checks so no administrator can accidentally lock themselves out.
+  2. *Rejection of Insecure In-Interface Password Reset:* When an initial prototype generated an in-browser password reset flow that displayed tokens on-screen without an external email/SMS delivery service, I recognized that anyone could reset any user's password directly from the UI. Following secure engineering principles, I rejected this fragile mechanism and completely removed it in favor of maintaining strict authentication integrity.
+  3. *Deadline Date Guard:* When observing date picker functionality, I noticed standard date pickers permitted arbitrary past dates. I enforced both client-side `min="YYYY-MM-DD"` attributes and robust server-side validation rejecting any due date before the current calendar day.
