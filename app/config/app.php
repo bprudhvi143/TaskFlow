@@ -4,6 +4,26 @@
  * RTIH TaskFlow
  */
 
+// Error display configuration
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+// Polyfills for PHP version compatibility (PHP 7.4 - 8.3+)
+if (!function_exists('str_starts_with')) {
+    function str_starts_with(?string $haystack, ?string $needle): bool {
+        if ($haystack === null || $needle === null) return false;
+        return strncmp($haystack, $needle, strlen($needle)) === 0;
+    }
+}
+if (!function_exists('str_ends_with')) {
+    function str_ends_with(?string $haystack, ?string $needle): bool {
+        if ($haystack === null || $needle === null) return false;
+        $len = strlen($needle);
+        return $len === 0 || (strlen($haystack) >= $len && substr_compare($haystack, $needle, -$len) === 0);
+    }
+}
+
 // 1. Simple .env Loader
 $envFile = __DIR__ . '/../../.env';
 if (file_exists($envFile)) {
